@@ -77,4 +77,4 @@ class Order(Base):
 
 
 # Import at bottom to avoid circular imports
-from app.models.order_item import OrderItem
+from app.models.order_item import OrderItem  # noqa: E402

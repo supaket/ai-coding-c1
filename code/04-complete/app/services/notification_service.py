@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from app.models import Notification, NotificationType, NotificationStatus
+from app.models import Notification, NotificationType
 from app.repositories.notification_repository import NotificationRepository
 from app.core.exceptions import NotificationNotFoundError
 

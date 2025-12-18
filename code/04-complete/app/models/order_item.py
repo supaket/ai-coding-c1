@@ -30,4 +30,4 @@ class OrderItem(Base):
         return Decimal(str(self.unit_price)) * self.quantity
 
 
-from app.models.order import Order
+from app.models.order import Order  # noqa: E402
