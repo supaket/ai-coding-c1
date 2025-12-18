@@ -1,6 +1,6 @@
 """
-Order Service - FastAPI Application
-Lab 3 Complete: Full business logic with repository/service layers.
+ShopFast API - FastAPI Application
+Full microservice with Users, Products, Orders, Inventory, and Notifications.
 
 Run: uvicorn app.main:app --reload
 Docs: http://localhost:8000/docs
@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.core.database import engine, Base
-from app.api.v1 import health, orders
+from app.api.v1 import health, orders, users, products, inventory, notifications
 
 
 @asynccontextmanager
@@ -27,8 +27,8 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
     app = FastAPI(
-        title="Order Service",
-        description="Microservice for order management - migrated from ShopFast monolith",
+        title="ShopFast API",
+        description="E-commerce microservice with full API endpoints",
         version="1.0.0",
         docs_url="/docs",
         redoc_url="/redoc",
@@ -37,12 +37,16 @@ def create_app() -> FastAPI:
     
     # Include routers
     app.include_router(health.router, prefix="/api/v1", tags=["Health"])
+    app.include_router(users.router, prefix="/api/v1", tags=["Users"])
+    app.include_router(products.router, prefix="/api/v1", tags=["Products"])
     app.include_router(orders.router, prefix="/api/v1", tags=["Orders"])
+    app.include_router(inventory.router, prefix="/api/v1", tags=["Inventory"])
+    app.include_router(notifications.router, prefix="/api/v1", tags=["Notifications"])
     
     @app.get("/", tags=["Root"])
     async def root():
         return {
-            "message": "Order Service API",
+            "message": "ShopFast API",
             "docs": "/docs",
             "health": "/api/v1/health"
         }
