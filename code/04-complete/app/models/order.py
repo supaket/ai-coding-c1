@@ -6,11 +6,14 @@ Lab 2 Complete: Converted from legacy Flask model.
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
-from typing import List, Optional
-from sqlalchemy import String, Numeric, Index
+from typing import List, Optional, TYPE_CHECKING
+from sqlalchemy import String, Numeric, Index, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
+
+if TYPE_CHECKING:
+    from app.models.user import User
 
 
 class OrderStatus(str, Enum):
@@ -40,7 +43,7 @@ class Order(Base):
     __tablename__ = "orders"
     
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     status: Mapped[str] = mapped_column(String(20), default=OrderStatus.PENDING.value)
     total: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=Decimal("0.00"))
     shipping_address: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
@@ -48,6 +51,8 @@ class Order(Base):
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, onupdate=datetime.utcnow)
     
+    # Relationships
+    user: Mapped["User"] = relationship("User", back_populates="orders")
     items: Mapped[List["OrderItem"]] = relationship(
         "OrderItem",
         back_populates="order",
