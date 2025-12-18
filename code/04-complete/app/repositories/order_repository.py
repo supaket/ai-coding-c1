@@ -74,7 +74,7 @@ class OrderRepository:
         
         return orders, total
     
-    async def get_by_user_id(self, user_id: int) -> List[Order]:
+    async def get_by_user_id(self, user_id: int) -> list[Order]:
         """Get all orders for a user with items loaded."""
         query = (
             select(Order)

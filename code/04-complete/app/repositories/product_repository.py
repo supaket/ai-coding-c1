@@ -62,7 +62,7 @@ class ProductRepository:
 
         return products, total
 
-    async def get_low_stock(self, threshold: int = 10) -> List[Product]:
+    async def get_low_stock(self, threshold: int = 10) -> list[Product]:
         """Get products with low stock."""
         query = (
             select(Product)
@@ -72,7 +72,7 @@ class ProductRepository:
         result = await self.session.execute(query)
         return list(result.scalars().all())
 
-    async def update_stock(self, product_id: int, new_stock: int) -> Optional[Product]:
+    async def update_stock(self, product_id: int, new_stock: int) -> Product | None:
         """Update product stock."""
         product = await self.get_by_id(product_id)
         if product:
@@ -81,7 +81,7 @@ class ProductRepository:
             await self.session.refresh(product)
         return product
 
-    async def add_stock(self, product_id: int, quantity: int) -> Optional[Product]:
+    async def add_stock(self, product_id: int, quantity: int) -> Product | None:
         """Add to product stock."""
         product = await self.get_by_id(product_id)
         if product:

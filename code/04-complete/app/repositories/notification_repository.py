@@ -1,9 +1,7 @@
-"""
-Notification Repository - Data Access Layer
-"""
+"""Notification Repository - Data Access Layer."""
 
-from datetime import datetime
-from typing import List, Optional
+from datetime import UTC, datetime
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,7 +11,7 @@ from app.models import Notification, NotificationStatus
 class NotificationRepository:
     """Repository for Notification database operations."""
 
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
     async def create(self, notification: Notification) -> Notification:
@@ -23,13 +21,13 @@ class NotificationRepository:
         await self.session.refresh(notification)
         return notification
 
-    async def get_by_id(self, notification_id: int) -> Optional[Notification]:
+    async def get_by_id(self, notification_id: int) -> Notification | None:
         """Get notification by ID."""
         query = select(Notification).where(Notification.id == notification_id)
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
 
-    async def get_pending(self) -> List[Notification]:
+    async def get_pending(self) -> list[Notification]:
         """Get all pending notifications."""
         query = (
             select(Notification)
@@ -42,18 +40,18 @@ class NotificationRepository:
     async def mark_sent(
         self,
         notification_id: int,
-        sent_at: Optional[datetime] = None
-    ) -> Optional[Notification]:
+        sent_at: datetime | None = None,
+    ) -> Notification | None:
         """Mark notification as sent."""
         notification = await self.get_by_id(notification_id)
         if notification:
             notification.status = NotificationStatus.SENT.value
-            notification.sent_at = sent_at or datetime.utcnow()
+            notification.sent_at = sent_at or datetime.now(UTC)
             await self.session.commit()
             await self.session.refresh(notification)
         return notification
 
-    async def create_bulk(self, notifications: List[Notification]) -> List[Notification]:
+    async def create_bulk(self, notifications: list[Notification]) -> list[Notification]:
         """Create multiple notifications."""
         self.session.add_all(notifications)
         await self.session.commit()
