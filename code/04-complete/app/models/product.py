@@ -2,9 +2,8 @@
 Product Model - SQLAlchemy 2.0 Mapped Syntax
 """
 
-from datetime import datetime
+from datetime import UTC, datetime
 from decimal import Decimal
-from typing import Optional
 
 from sqlalchemy import String, Numeric, Text
 from sqlalchemy.orm import Mapped, mapped_column
@@ -18,11 +17,11 @@ class Product(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(200))
-    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
     stock: Mapped[int] = mapped_column(default=0)
-    category: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, index=True)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    category: Mapped[str | None] = mapped_column(String(50), nullable=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
 
     @property
     def is_low_stock(self) -> bool:

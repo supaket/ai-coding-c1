@@ -2,8 +2,8 @@
 User Model - SQLAlchemy 2.0 Mapped Syntax
 """
 
-from datetime import datetime
-from typing import List, TYPE_CHECKING
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -21,11 +21,11 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(120), unique=True, index=True)
     name: Mapped[str] = mapped_column(String(100))
-    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
 
     # Relationships
-    orders: Mapped[List["Order"]] = relationship(
+    orders: Mapped[list["Order"]] = relationship(
         "Order",
         back_populates="user",
-        lazy="selectin"
+        lazy="selectin",
     )

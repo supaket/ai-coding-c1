@@ -3,10 +3,11 @@ Order Model - SQLAlchemy 2.0 Mapped Syntax
 Lab 2 Complete: Converted from legacy Flask model.
 """
 
-from datetime import datetime
+from datetime import UTC, datetime
 from decimal import Decimal
 from enum import Enum
-from typing import List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
+
 from sqlalchemy import String, Numeric, Index, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -46,20 +47,23 @@ class Order(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     status: Mapped[str] = mapped_column(String(20), default=OrderStatus.PENDING.value)
     total: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=Decimal("0.00"))
-    shipping_address: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
-    notes: Mapped[Optional[str]] = mapped_column(String(1000), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+    shipping_address: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    notes: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
+    updated_at: Mapped[datetime] = mapped_column(
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
+    )
+
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="orders")
-    items: Mapped[List["OrderItem"]] = relationship(
+    items: Mapped[list["OrderItem"]] = relationship(
         "OrderItem",
         back_populates="order",
         cascade="all, delete-orphan",
-        lazy="selectin"
+        lazy="selectin",
     )
-    
+
     __table_args__ = (
         Index("idx_user_status", "user_id", "status"),
         Index("idx_created_at", "created_at"),

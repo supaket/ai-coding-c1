@@ -2,9 +2,8 @@
 Notification Model - SQLAlchemy 2.0 Mapped Syntax
 """
 
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
-from typing import Optional
 
 from sqlalchemy import String, Text, Index
 from sqlalchemy.orm import Mapped, mapped_column
@@ -43,9 +42,9 @@ class Notification(Base):
         default=NotificationStatus.PENDING.value,
         index=True
     )
-    reference_id: Mapped[Optional[int]] = mapped_column(nullable=True)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
-    sent_at: Mapped[Optional[datetime]] = mapped_column(nullable=True)
+    reference_id: Mapped[int | None] = mapped_column(nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
+    sent_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
     __table_args__ = (
         Index("idx_notification_status_created", "status", "created_at"),
