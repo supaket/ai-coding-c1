@@ -1,6 +1,4 @@
-"""
-Users API Endpoints
-"""
+"""Users API Endpoints."""
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,12 +22,12 @@ def get_user_service(session: AsyncSession = Depends(get_async_session)) -> User
     "/users",
     response_model=UserResponse,
     status_code=201,
-    responses={409: {"model": ErrorResponse}}
+    responses={409: {"model": ErrorResponse}},
 )
 async def create_user(
     data: UserCreate,
-    service: UserService = Depends(get_user_service)
-):
+    service: UserService = Depends(get_user_service),
+) -> UserResponse:
     """Create a new user."""
     try:
         user = await service.create_user(data)
@@ -41,12 +39,12 @@ async def create_user(
 @router.get(
     "/users/{user_id}",
     response_model=UserResponse,
-    responses={404: {"model": ErrorResponse}}
+    responses={404: {"model": ErrorResponse}},
 )
 async def get_user(
     user_id: int,
-    service: UserService = Depends(get_user_service)
-):
+    service: UserService = Depends(get_user_service),
+) -> UserResponse:
     """Get user by ID."""
     try:
         user = await service.get_user(user_id)

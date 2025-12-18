@@ -1,6 +1,4 @@
-"""
-Inventory API Endpoints
-"""
+"""Inventory API Endpoints."""
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -29,12 +27,12 @@ def get_product_service(session: AsyncSession = Depends(get_async_session)) -> P
 
 @router.get(
     "/inventory/low-stock",
-    response_model=list[LowStockItem]
+    response_model=list[LowStockItem],
 )
 async def get_low_stock_items(
     threshold: int = Query(10, ge=1, description="Stock threshold"),
-    service: ProductService = Depends(get_product_service)
-):
+    service: ProductService = Depends(get_product_service),
+) -> list[LowStockItem]:
     """Get products with low stock (below threshold)."""
     products = await service.get_low_stock_items(threshold)
     return products
@@ -43,13 +41,13 @@ async def get_low_stock_items(
 @router.put(
     "/inventory/{product_id}",
     response_model=ProductResponse,
-    responses={404: {"model": ErrorResponse}}
+    responses={404: {"model": ErrorResponse}},
 )
 async def update_stock(
     product_id: int,
     data: ProductStockUpdate,
-    service: ProductService = Depends(get_product_service)
-):
+    service: ProductService = Depends(get_product_service),
+) -> ProductResponse:
     """Update product stock level."""
     try:
         product = await service.update_stock(product_id, data.stock)
@@ -61,18 +59,18 @@ async def update_stock(
 @router.post(
     "/inventory/restock",
     response_model=BulkRestockResponse,
-    responses={404: {"model": ErrorResponse}}
+    responses={404: {"model": ErrorResponse}},
 )
 async def bulk_restock(
     data: BulkRestockRequest,
-    service: ProductService = Depends(get_product_service)
-):
+    service: ProductService = Depends(get_product_service),
+) -> BulkRestockResponse:
     """Bulk restock multiple products."""
     try:
         products = await service.bulk_restock(data)
         return BulkRestockResponse(
             updated_count=len(products),
-            items=products
+            items=products,
         )
     except ProductNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
