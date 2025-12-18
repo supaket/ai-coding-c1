@@ -1,10 +1,16 @@
 """
-Custom Exceptions for Order Service
-Lab 3 Complete: Business logic exceptions.
+Custom Exceptions for ShopFast API
+Full API: Business logic exceptions for all services.
 """
 
 
-class OrderServiceError(Exception):
+class ShopFastError(Exception):
+    """Base exception for ShopFast API."""
+    pass
+
+
+# Order Exceptions
+class OrderServiceError(ShopFastError):
     """Base exception for order service."""
     pass
 
@@ -36,8 +42,59 @@ class OrderCancellationError(OrderServiceError):
         )
 
 
-class ProductNotFoundError(OrderServiceError):
+# User Exceptions
+class UserServiceError(ShopFastError):
+    """Base exception for user service."""
+    pass
+
+
+class UserNotFoundError(UserServiceError):
+    """Raised when user is not found."""
+    def __init__(self, user_id: int):
+        self.user_id = user_id
+        super().__init__(f"User with ID {user_id} not found")
+
+
+class UserAlreadyExistsError(UserServiceError):
+    """Raised when user email already exists."""
+    def __init__(self, email: str):
+        self.email = email
+        super().__init__(f"User with email '{email}' already exists")
+
+
+# Product Exceptions
+class ProductServiceError(ShopFastError):
+    """Base exception for product service."""
+    pass
+
+
+class ProductNotFoundError(ProductServiceError):
     """Raised when product is not found."""
     def __init__(self, product_id: int):
         self.product_id = product_id
         super().__init__(f"Product with ID {product_id} not found")
+
+
+class InsufficientStockError(ProductServiceError):
+    """Raised when product has insufficient stock."""
+    def __init__(self, product_id: int, requested: int, available: int):
+        self.product_id = product_id
+        self.requested = requested
+        self.available = available
+        super().__init__(
+            f"Insufficient stock for product {product_id}: "
+            f"requested {requested}, available {available}"
+        )
+
+
+# Notification Exceptions
+class NotificationServiceError(ShopFastError):
+    """Base exception for notification service."""
+    pass
+
+
+class NotificationNotFoundError(NotificationServiceError):
+    """Raised when notification is not found."""
+    def __init__(self, notification_id: int):
+        self.notification_id = notification_id
+        super().__init__(f"Notification with ID {notification_id} not found")
