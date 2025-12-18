@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 5: Designing Your AI-Augmented Workflow</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f0f23; color: #e0e0e0; line-height: 1.7; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+    .nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 32px; }
+    .nav a { color: #00d4ff; text-decoration: none; font-size: 14px; }
+    .nav .module-indicator { background: rgba(0,212,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 13px; color: #00d4ff; }
+    .module-header { margin-bottom: 40px; }
+    .module-header .badge { display: inline-block; background: linear-gradient(135deg, #00d4ff, #0099ff); color: #000; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 12px; }
+    .module-header h1 { font-size: 36px; color: #fff; margin-bottom: 12px; }
+    .module-header .subtitle { font-size: 18px; color: #a0a0a0; }
+    .meta-bar { display: flex; gap: 24px; margin: 24px 0; flex-wrap: wrap; }
+    .meta-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #888; }
+    .objectives { background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,255,136,0.02)); border: 1px solid rgba(0,255,136,0.3); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
+    .objectives h3 { color: #00ff88; margin-bottom: 16px; font-size: 16px; }
+    .objectives ul { list-style: none; padding: 0; }
+    .objectives li { padding: 8px 0; padding-left: 24px; position: relative; color: #c0c0c0; }
+    .objectives li::before { content: "✓"; position: absolute; left: 0; color: #00ff88; }
+    .section { margin-bottom: 48px; }
+    .section h2 { font-size: 24px; color: #fff; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #00d4ff; }
+    .section h3 { font-size: 18px; color: #00d4ff; margin: 24px 0 12px; }
+    .section p { color: #b0b0b0; margin-bottom: 16px; }
+    .exercise { background: rgba(138,43,226,0.1); border: 1px solid rgba(138,43,226,0.3); border-radius: 12px; padding: 24px; margin: 20px 0; }
+    .exercise-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; color: #bb86fc; font-weight: 600; font-size: 16px; }
+    .exercise-content { color: #c0c0c0; }
+    .exercise-content ol, .exercise-content ul { margin-left: 20px; margin-top: 12px; }
+    .exercise-content li { margin-bottom: 8px; }
+    .workflow-diagram { background: #1a1a2e; border-radius: 12px; padding: 24px; margin: 20px 0; text-align: center; }
+    .workflow-diagram pre { font-family: 'Consolas', monospace; font-size: 12px; color: #00d4ff; display: inline-block; text-align: left; }
+    .info-box { border-radius: 8px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 12px; }
+    .info-box.tip { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); }
+    .info-box.warning { background: rgba(255,193,7,0.1); border: 1px solid rgba(255,193,7,0.3); }
+    .info-box.success { background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); }
+    .info-box .icon { font-size: 20px; flex-shrink: 0; }
+    .info-box .content { font-size: 14px; color: #c0c0c0; }
+    .info-box .content strong { color: #fff; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    th { background: rgba(255,255,255,0.05); color: #00d4ff; font-size: 13px; }
+    td { color: #c0c0c0; font-size: 14px; }
+    .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0; }
+    .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; }
+    .card h4 { color: #00d4ff; font-size: 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .card p { color: #888; font-size: 14px; margin-bottom: 12px; }
+    .card ul { margin-left: 16px; font-size: 13px; color: #a0a0a0; }
+    .card ul li { margin-bottom: 4px; }
+    .timeline { margin: 24px 0; }
+    .timeline-item { display: flex; gap: 20px; margin-bottom: 20px; }
+    .timeline-marker { width: 40px; flex-shrink: 0; text-align: center; }
+    .timeline-marker .week { background: linear-gradient(135deg, #00d4ff, #00ff88); color: #000; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+    .timeline-content { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 16px; }
+    .timeline-content h5 { color: #fff; margin-bottom: 8px; }
+    .timeline-content p { color: #888; font-size: 14px; margin: 0; }
+    .action-plan { background: linear-gradient(135deg, rgba(0,255,136,0.05), rgba(0,212,255,0.05)); border: 2px solid rgba(0,255,136,0.3); border-radius: 16px; padding: 32px; margin: 32px 0; }
+    .action-plan h3 { color: #00ff88; margin-bottom: 20px; text-align: center; }
+    .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .action-item { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; text-align: center; }
+    .action-item .icon { font-size: 32px; margin-bottom: 12px; }
+    .action-item h5 { color: #fff; margin-bottom: 8px; }
+    .action-item p { color: #888; font-size: 13px; }
+    .completion-banner { background: linear-gradient(135deg, #00ff88, #00d4ff); border-radius: 16px; padding: 32px; margin: 40px 0; text-align: center; color: #000; }
+    .completion-banner h2 { font-size: 28px; margin-bottom: 12px; }
+    .completion-banner p { font-size: 16px; opacity: 0.9; }
+    .nav-footer { display: flex; justify-content: space-between; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .nav-btn { display: flex; align-items: center; gap: 8px; padding: 12px 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; text-decoration: none; font-size: 14px; }
+    .nav-btn:hover { background: rgba(0,212,255,0.1); border-color: #00d4ff; }
+    .nav-btn.primary { background: linear-gradient(135deg, #00d4ff, #0099ff); color: #000; border: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a href="module-04-legacy-to-microservice.html">← Module 4</a>
+      <span class="module-indicator">Module 5 of 5</span>
+      <a href="00-course-overview.html">Course Overview</a>
+    </nav>
+
+    <header class="module-header">
+      <span class="badge">Module 5</span>
+      <h1>Designing Your AI-Augmented Workflow</h1>
+      <p class="subtitle">Create a practical plan to integrate AI into your daily development workflow and team practices.</p>
+    </header>
+
+    <div class="meta-bar">
+      <div class="meta-item"><span>⏱️</span><span>45 minutes</span></div>
+      <div class="meta-item"><span>📝</span><span>3 exercises</span></div>
+      <div class="meta-item"><span>📋</span><span>Action plan</span></div>
+    </div>
+
+    <div class="objectives">
+      <h3>🎯 Learning Objectives</h3>
+      <ul>
+        <li>Design an AI-in-the-loop workflow for your team</li>
+        <li>Identify quick-win experiments for the next 2–4 weeks</li>
+        <li>Create a personal action plan for AI adoption</li>
+        <li>Establish team standards for AI-assisted development</li>
+        <li>Plan the path from ad-hoc AI use to systematic integration</li>
+      </ul>
+    </div>
+
+    <section class="section">
+      <h2>🔄 Part 1: AI-in-the-Loop Workflow</h2>
+      
+      <p>The most effective AI integration isn't about replacing developers—it's about creating feedback loops where AI amplifies human capabilities at every stage.</p>
+
+      <div class="workflow-diagram">
+<pre>
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     AI-IN-THE-LOOP DEVELOPMENT                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+     ┌─────────┐         ┌─────────┐         ┌─────────┐         ┌─────────┐
+     │ PLAN    │────────▶│  CODE   │────────▶│ REVIEW  │────────▶│  TEST   │
+     └────┬────┘         └────┬────┘         └────┬────┘         └────┬────┘
+          │                   │                   │                   │
+          ▼                   ▼                   ▼                   ▼
+     ┌─────────┐         ┌─────────┐         ┌─────────┐         ┌─────────┐
+     │🤖 AI    │         │🤖 AI    │         │🤖 AI    │         │🤖 AI    │
+     │Research │         │Generate │         │First    │         │Generate │
+     │& Design │         │& Refactor│        │Pass     │         │Cases    │
+     └─────────┘         └─────────┘         └─────────┘         └─────────┘
+          │                   │                   │                   │
+          ▼                   ▼                   ▼                   ▼
+     ┌─────────┐         ┌─────────┐         ┌─────────┐         ┌─────────┐
+     │👤 Human │         │👤 Human │         │👤 Human │         │👤 Human │
+     │Decide   │         │Review   │         │Approve  │         │Verify   │
+     │& Approve│         │& Refine │         │& Merge  │         │& Sign   │
+     └─────────┘         └─────────┘         └─────────┘         └─────────┘
+</pre>
+      </div>
+
+      <h3>Key Principles</h3>
+      
+      <div class="card-grid">
+        <div class="card">
+          <h4>🔁 AI Proposes, Human Disposes</h4>
+          <p>AI generates options and suggestions. Humans make final decisions.</p>
+          <ul>
+            <li>AI drafts, human refines</li>
+            <li>AI suggests, human validates</li>
+            <li>AI automates, human supervises</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>📊 Measure Before & After</h4>
+          <p>Track metrics to understand AI's actual impact.</p>
+          <ul>
+            <li>Time to complete tasks</li>
+            <li>Code review iterations</li>
+            <li>Bug escape rate</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>🔒 Security First</h4>
+          <p>Never compromise on data protection.</p>
+          <ul>
+            <li>Sanitize before sharing</li>
+            <li>Use approved tools only</li>
+            <li>Review AI output for secrets</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>📚 Share Knowledge</h4>
+          <p>What works for one benefits all.</p>
+          <ul>
+            <li>Share effective prompts</li>
+            <li>Document patterns</li>
+            <li>Learn from failures</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-header">
+          <span>✏️</span> Exercise 1: Design Your AI Workflow (10 min)
+        </div>
+        <div class="exercise-content">
+          <p>For your typical development cycle, identify where AI fits:</p>
+          <ol>
+            <li><strong>Planning:</strong> How can AI help with requirements analysis, design decisions?</li>
+            <li><strong>Coding:</strong> Where does generation/refactoring help most?</li>
+            <li><strong>Review:</strong> What should AI check before human review?</li>
+            <li><strong>Testing:</strong> Which test types can AI generate?</li>
+            <li><strong>Deploy:</strong> Can AI help with configs, monitoring setup?</li>
+          </ol>
+          <p style="margin-top: 16px;">Draw your team's AI-augmented workflow on paper or whiteboard.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🚀 Part 2: Quick-Win Experiments</h2>
+      
+      <p>Start with experiments that are low-risk, high-visibility, and measurable. Success here builds momentum for broader adoption.</p>
+
+      <h3>Recommended Quick Wins</h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Experiment</th>
+            <th>Time Investment</th>
+            <th>Expected Benefit</th>
+            <th>Risk Level</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>AI-Generated Documentation</strong></td>
+            <td>~2 hours to start</td>
+            <td>50% faster doc writing</td>
+            <td>🟢 Very Low</td>
+          </tr>
+          <tr>
+            <td><strong>Test Case Generation</strong></td>
+            <td>~4 hours to integrate</td>
+            <td>More edge cases caught</td>
+            <td>🟢 Low</td>
+          </tr>
+          <tr>
+            <td><strong>Code Review First Pass</strong></td>
+            <td>~1 hour per review</td>
+            <td>Faster review cycles</td>
+            <td>🟢 Low</td>
+          </tr>
+          <tr>
+            <td><strong>Boilerplate Generation</strong></td>
+            <td>~30 min per task</td>
+            <td>Hours saved per project</td>
+            <td>🟢 Low</td>
+          </tr>
+          <tr>
+            <td><strong>Error Analysis</strong></td>
+            <td>~15 min per bug</td>
+            <td>Faster debugging</td>
+            <td>🟡 Medium</td>
+          </tr>
+          <tr>
+            <td><strong>Legacy Code Understanding</strong></td>
+            <td>~1 hour per module</td>
+            <td>Onboarding acceleration</td>
+            <td>🟡 Medium</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4-Week Experiment Timeline</h3>
+      
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="week">1</div>
+          </div>
+          <div class="timeline-content">
+            <h5>Week 1: Learn & Setup</h5>
+            <p>Pick one quick win. Learn the prompts. Try it on personal/side tasks. Document what works.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="week">2</div>
+          </div>
+          <div class="timeline-content">
+            <h5>Week 2: Apply to Real Work</h5>
+            <p>Use AI on actual project tasks. Track time spent and quality. Note friction points.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="week">3</div>
+          </div>
+          <div class="timeline-content">
+            <h5>Week 3: Refine & Share</h5>
+            <p>Refine prompts based on experience. Share findings with 1-2 teammates. Get feedback.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="week">4</div>
+          </div>
+          <div class="timeline-content">
+            <h5>Week 4: Evaluate & Expand</h5>
+            <p>Measure results. Decide: continue, modify, or try different experiment. Plan next quick win.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-header">
+          <span>✏️</span> Exercise 2: Choose Your Quick Wins (10 min)
+        </div>
+        <div class="exercise-content">
+          <p>Select 2-3 experiments to try in the next month:</p>
+          <ol>
+            <li><strong>Primary Experiment:</strong> What will you start with tomorrow?</li>
+            <li><strong>Backup Experiment:</strong> If that doesn't work, what's Plan B?</li>
+            <li><strong>Team Experiment:</strong> What could you pilot with your team?</li>
+          </ol>
+          <p style="margin-top: 16px;">For each, define: Success criteria, Time commitment, Who needs to approve.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>📋 Part 3: Personal Action Plan</h2>
+      
+      <p>Move from ad-hoc AI use to systematic, intentional integration.</p>
+
+      <h3>Maturity Levels</h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Level</th>
+            <th>Description</th>
+            <th>Characteristics</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Ad-hoc</strong></td>
+            <td>Occasional, unstructured use</td>
+            <td>Try AI when stuck, no consistency</td>
+          </tr>
+          <tr>
+            <td><strong>2. Personal Practice</strong></td>
+            <td>Regular individual use</td>
+            <td>Saved prompts, known patterns, measured benefit</td>
+          </tr>
+          <tr>
+            <td><strong>3. Team Integration</strong></td>
+            <td>Shared practices</td>
+            <td>Team prompt library, review guidelines, standards</td>
+          </tr>
+          <tr>
+            <td><strong>4. Process Embedded</strong></td>
+            <td>Built into workflow</td>
+            <td>CI/CD integration, automated checks, metrics</td>
+          </tr>
+          <tr>
+            <td><strong>5. Continuous Improvement</strong></td>
+            <td>Optimized & evolving</td>
+            <td>Regular retrospectives, prompt versioning, A/B testing</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box tip">
+        <span class="icon">💡</span>
+        <div class="content">
+          <strong>Start Where You Are:</strong> Most developers are at Level 1-2. Focus on moving one level up, not jumping to Level 5. Sustainable progress beats ambitious plans that fizzle.
+        </div>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-header">
+          <span>✏️</span> Exercise 3: Create Your Action Plan (15 min)
+        </div>
+        <div class="exercise-content">
+          <p>Fill out your personal AI adoption plan:</p>
+          <ol>
+            <li><strong>Current State:</strong> What level are you at now? What's working?</li>
+            <li><strong>30-Day Goal:</strong> One specific improvement you'll make</li>
+            <li><strong>90-Day Goal:</strong> Where do you want to be in 3 months?</li>
+            <li><strong>Blockers:</strong> What might stop you? How will you address it?</li>
+            <li><strong>Support Needed:</strong> What do you need from your team/manager?</li>
+            <li><strong>Success Metric:</strong> How will you know you've succeeded?</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <div class="action-plan">
+      <h3>📋 Your AI Adoption Action Plan</h3>
+      <div class="action-grid">
+        <div class="action-item">
+          <div class="icon">📅</div>
+          <h5>This Week</h5>
+          <p>Try one AI prompt from this course on a real task</p>
+        </div>
+        <div class="action-item">
+          <div class="icon">📆</div>
+          <h5>This Month</h5>
+          <p>Complete one quick-win experiment with measured results</p>
+        </div>
+        <div class="action-item">
+          <div class="icon">🗓️</div>
+          <h5>This Quarter</h5>
+          <p>Share learnings with team and establish one shared practice</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <h2>🏢 Establishing Team Standards</h2>
+      
+      <p>As AI becomes part of your workflow, establish clear guidelines to ensure consistency and safety.</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <h4>📝 Prompt Library</h4>
+          <p>Maintain a shared collection of effective prompts.</p>
+          <ul>
+            <li>Version control your prompts</li>
+            <li>Include example inputs/outputs</li>
+            <li>Tag by use case and language</li>
+            <li>Note known limitations</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>🔒 Security Guidelines</h4>
+          <p>Clear rules on what can be shared with AI.</p>
+          <ul>
+            <li>Approved AI tools list</li>
+            <li>Data classification rules</li>
+            <li>Sanitization procedures</li>
+            <li>Incident response plan</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>✅ Quality Standards</h4>
+          <p>How to validate AI-generated code.</p>
+          <ul>
+            <li>Review requirements for AI code</li>
+            <li>Testing requirements</li>
+            <li>Documentation standards</li>
+            <li>Attribution practices</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>📊 Metrics & Reporting</h4>
+          <p>Track the impact of AI adoption.</p>
+          <ul>
+            <li>Time savings tracked</li>
+            <li>Quality metrics compared</li>
+            <li>Team satisfaction surveys</li>
+            <li>Regular retrospectives</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="completion-banner">
+      <h2>🎉 Congratulations!</h2>
+      <p>You've completed the AI Coding in the Real World workshop!<br>
+      You now have the knowledge and tools to effectively integrate AI into your development workflow.</p>
+    </div>
+
+    <section class="section">
+      <h2>📚 Course Summary</h2>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Module</th>
+            <th>Key Takeaways</th>
+            <th>Deliverables</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Workspace & AI</strong></td>
+            <td>Map workflow, identify opportunities, set boundaries</td>
+            <td>Workflow map, risk assessment</td>
+          </tr>
+          <tr>
+            <td><strong>2. Coding Patterns</strong></td>
+            <td>Understand, generate, refactor, review with AI</td>
+            <td>Personal prompt library</td>
+          </tr>
+          <tr>
+            <td><strong>3. DevOps & Testing</strong></td>
+            <td>CI/CD, test generation, log analysis</td>
+            <td>Pipeline configs, test templates</td>
+          </tr>
+          <tr>
+            <td><strong>4. Legacy Migration</strong></td>
+            <td>Analyze, scaffold, extract, test migrations</td>
+            <td>Working microservice</td>
+          </tr>
+          <tr>
+            <td><strong>5. Your Workflow</strong></td>
+            <td>Design AI-in-the-loop process, plan adoption</td>
+            <td>Personal action plan</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>🔗 Next Steps & Resources</h2>
+      
+      <div class="card-grid">
+        <div class="card">
+          <h4>📖 Keep Learning</h4>
+          <ul>
+            <li>Anthropic's prompting guide</li>
+            <li>OpenAI cookbook</li>
+            <li>GitHub Copilot docs</li>
+            <li>Team prompt sharing channels</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>👥 Connect</h4>
+          <ul>
+            <li>Share your experiments</li>
+            <li>Join AI developer communities</li>
+            <li>Contribute to prompt libraries</li>
+            <li>Mentor others on the journey</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="nav-footer">
+      <a href="module-04-legacy-to-microservice.html" class="nav-btn">← Module 4</a>
+      <a href="00-course-overview.html" class="nav-btn primary">Back to Course Overview</a>
+    </div>
+  </div>
+</body>
+</html>

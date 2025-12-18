@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 3: DevOps, Testing & Quality with AI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f0f23; color: #e0e0e0; line-height: 1.7; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+    .nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 32px; }
+    .nav a { color: #00d4ff; text-decoration: none; font-size: 14px; }
+    .nav .module-indicator { background: rgba(0,212,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 13px; color: #00d4ff; }
+    .module-header { margin-bottom: 40px; }
+    .module-header .badge { display: inline-block; background: linear-gradient(135deg, #00d4ff, #0099ff); color: #000; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 12px; }
+    .module-header h1 { font-size: 36px; color: #fff; margin-bottom: 12px; }
+    .module-header .subtitle { font-size: 18px; color: #a0a0a0; }
+    .meta-bar { display: flex; gap: 24px; margin: 24px 0; flex-wrap: wrap; }
+    .meta-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #888; }
+    .objectives { background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,255,136,0.02)); border: 1px solid rgba(0,255,136,0.3); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
+    .objectives h3 { color: #00ff88; margin-bottom: 16px; font-size: 16px; }
+    .objectives ul { list-style: none; padding: 0; }
+    .objectives li { padding: 8px 0; padding-left: 24px; position: relative; color: #c0c0c0; }
+    .objectives li::before { content: "✓"; position: absolute; left: 0; color: #00ff88; }
+    .section { margin-bottom: 48px; }
+    .section h2 { font-size: 24px; color: #fff; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #00d4ff; }
+    .section h3 { font-size: 18px; color: #00d4ff; margin: 24px 0 12px; }
+    .section p { color: #b0b0b0; margin-bottom: 16px; }
+    .ai-prompt { background: linear-gradient(135deg, rgba(138,43,226,0.1), rgba(138,43,226,0.02)); border: 1px solid rgba(138,43,226,0.4); border-radius: 12px; padding: 20px; margin: 20px 0; }
+    .ai-prompt-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; color: #bb86fc; font-weight: 600; }
+    .ai-prompt-content { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px; font-family: 'Consolas', monospace; font-size: 13px; color: #e0e0e0; line-height: 1.6; white-space: pre-wrap; }
+    .code-block { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 8px; margin: 16px 0; overflow: hidden; }
+    .code-header { background: #252540; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2a4a; }
+    .code-filename { font-size: 13px; color: #00d4ff; font-family: 'Consolas', monospace; }
+    .code-lang { font-size: 11px; color: #888; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; }
+    .code-content { padding: 16px; overflow-x: auto; }
+    .code-content pre { margin: 0; font-family: 'Consolas', monospace; font-size: 13px; line-height: 1.5; color: #e0e0e0; }
+    .pattern-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .pattern-card h4 { color: #00d4ff; font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+    .pattern-card p { color: #a0a0a0; font-size: 14px; margin-bottom: 16px; }
+    .info-box { border-radius: 8px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 12px; }
+    .info-box.tip { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); }
+    .info-box.warning { background: rgba(255,193,7,0.1); border: 1px solid rgba(255,193,7,0.3); }
+    .info-box.success { background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); }
+    .info-box .icon { font-size: 20px; flex-shrink: 0; }
+    .info-box .content { font-size: 14px; color: #c0c0c0; }
+    .info-box .content strong { color: #fff; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    th { background: rgba(255,255,255,0.05); color: #00d4ff; font-size: 13px; }
+    td { color: #c0c0c0; font-size: 14px; }
+    .checkpoint { background: linear-gradient(135deg, #1a1a3e, #252550); border: 2px solid #00d4ff; border-radius: 12px; padding: 24px; margin: 32px 0; text-align: center; }
+    .checkpoint h4 { color: #00d4ff; margin-bottom: 12px; }
+    .checkpoint ul { list-style: none; padding: 0; text-align: left; max-width: 500px; margin: 0 auto; }
+    .checkpoint li { padding: 8px 0; color: #c0c0c0; display: flex; align-items: center; gap: 10px; }
+    .nav-footer { display: flex; justify-content: space-between; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .nav-btn { display: flex; align-items: center; gap: 8px; padding: 12px 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; text-decoration: none; font-size: 14px; }
+    .nav-btn:hover { background: rgba(0,212,255,0.1); border-color: #00d4ff; }
+    .nav-btn.primary { background: linear-gradient(135deg, #00d4ff, #0099ff); color: #000; border: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a href="module-02-ai-coding-patterns.html">← Module 2</a>
+      <span class="module-indicator">Module 3 of 5</span>
+      <a href="module-04-legacy-to-microservice.html">Module 4 →</a>
+    </nav>
+
+    <header class="module-header">
+      <span class="badge">Module 3</span>
+      <h1>DevOps, Testing & Quality with AI</h1>
+      <p class="subtitle">Use AI to generate CI/CD pipelines, test cases, infrastructure configs, and debug production issues faster.</p>
+    </header>
+
+    <div class="meta-bar">
+      <div class="meta-item"><span>⏱️</span><span>60 minutes</span></div>
+      <div class="meta-item"><span>🤖</span><span>6 AI prompts</span></div>
+      <div class="meta-item"><span>🧪</span><span>Hands-on practice</span></div>
+    </div>
+
+    <div class="objectives">
+      <h3>🎯 Learning Objectives</h3>
+      <ul>
+        <li>Generate CI/CD pipelines with AI assistance</li>
+        <li>Create infrastructure templates (Docker, Kubernetes configs)</li>
+        <li>Generate comprehensive test cases and edge scenarios</li>
+        <li>Create realistic test data and fixtures</li>
+        <li>Use AI to analyze logs and troubleshoot errors</li>
+      </ul>
+    </div>
+
+    <section class="section">
+      <h2>🔧 Part 1: AI for CI/CD Pipelines</h2>
+      
+      <p>AI can generate complete CI/CD pipeline configurations based on your project requirements.</p>
+
+      <div class="pattern-card">
+        <h4>⚙️ CI/CD Pipeline Generation Prompt</h4>
+        <p>Use this to generate a complete pipeline for your project.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Generate CI/CD Pipeline
+          </div>
+          <div class="ai-prompt-content">Create a GitHub Actions CI/CD pipeline for:
+
+Project: [Python/Node/Go] [web app/API/library]
+Testing: [pytest/jest/etc]
+Deployment: [AWS/GCP/Kubernetes/Docker]
+
+Include these stages:
+1. Lint and format check
+2. Run tests with coverage
+3. Build Docker image (if applicable)
+4. Push to container registry
+5. Deploy to staging
+6. (Manual gate) Deploy to production
+
+Additional requirements:
+- Cache dependencies for speed
+- Run on push to main and pull requests
+- Use secrets for credentials
+- Include status badges</div>
+        </div>
+      </div>
+
+      <h3>Example: Generated GitHub Actions Pipeline</h3>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">.github/workflows/ci-cd.yml</span>
+          <span class="code-lang">YAML</span>
+        </div>
+        <div class="code-content">
+<pre>name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.11"
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install ruff black
+      - run: ruff check .
+      - run: black --check .
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - run: pytest --cov=app --cov-report=xml
+      - uses: codecov/codecov-action@v3
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest</pre>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <h4>🐳 Dockerfile Generation Prompt</h4>
+        <p>Use this to generate optimized Docker configurations.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Generate Dockerfile
+          </div>
+          <div class="ai-prompt-content">Create a production-ready Dockerfile for:
+
+Application: [FastAPI/Django/Node/Go] app
+Requirements:
+- Multi-stage build for smaller image
+- Non-root user for security
+- Health check endpoint
+- Proper layer caching
+- Environment variables support
+
+Base image preference: [Alpine/Slim/Distroless]
+Port: [8000]
+Entry point: [uvicorn/gunicorn/node/etc]</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🧪 Part 2: AI for Test Generation</h2>
+      
+      <p>AI excels at generating comprehensive test suites, including edge cases humans often miss.</p>
+
+      <div class="pattern-card">
+        <h4>📝 Test Case Generation Prompt</h4>
+        <p>Use this to generate thorough test cases for your functions.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Generate Test Cases
+          </div>
+          <div class="ai-prompt-content">Generate pytest test cases for this function:
+
+```python
+[paste your function here]
+```
+
+Include tests for:
+1. Happy path - normal expected usage
+2. Edge cases - boundary values, empty inputs
+3. Error cases - invalid inputs, exceptions
+4. Type validation - wrong types
+5. Async behavior (if applicable)
+
+Use pytest fixtures where appropriate.
+Include docstrings explaining what each test verifies.</div>
+        </div>
+      </div>
+
+      <h3>Example: Generated Test Suite</h3>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">tests/test_validate_email.py</span>
+          <span class="code-lang">Python</span>
+        </div>
+        <div class="code-content">
+<pre>import pytest
+from app.utils import validate_email
+
+
+class TestValidateEmailHappyPath:
+    """Tests for valid email addresses."""
+    
+    def test_simple_email(self):
+        """Standard email format should pass."""
+        is_valid, msg = validate_email("<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5124223423113429303c213d347f323e3c">[email&#160;protected]</a>")
+        assert is_valid is True
+    
+    def test_email_with_subdomain(self):
+        """Email with subdomain should pass."""
+        is_valid, msg = validate_email("<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5025233522103d31393c7e3528313d203c357e333f3d">[email&#160;protected]</a>")
+        assert is_valid is True
+    
+    def test_email_with_plus(self):
+        """Email with plus addressing should pass."""
+        is_valid, msg = validate_email("<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8efbfdebfca5faefe9ceebf6efe3fee2eba0ede1e3">[email&#160;protected]</a>")
+        assert is_valid is True
+
+
+class TestValidateEmailEdgeCases:
+    """Tests for edge cases and boundary conditions."""
+    
+    def test_empty_email(self):
+        """Empty string should fail."""
+        is_valid, msg = validate_email("")
+        assert is_valid is False
+        assert "empty" in msg.lower()
+    
+    def test_max_length_email(self):
+        """Email at max length (254) should pass."""
+        local = "a" * 64
+        domain = "b" * 185 + ".com"
+        email = f"{local}@{domain}"
+        is_valid, msg = validate_email(email[:254])
+        # Test specific behavior at boundary
+    
+    def test_exceeds_max_length(self):
+        """Email over 254 chars should fail."""
+        email = "a" * 250 + "@example.com"
+        is_valid, msg = validate_email(email)
+        assert is_valid is False
+
+
+class TestValidateEmailInvalidFormats:
+    """Tests for invalid email formats."""
+    
+    @pytest.mark.parametrize("invalid_email", [
+        "no-at-sign",
+        "@no-local.com",
+        "no-domain@",
+        "spaces <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="365f5876535b575f5a1855595b">[email&#160;protected]</a>",
+        "double@@at.com",
+    ])
+    def test_invalid_formats(self, invalid_email):
+        """Various invalid formats should fail."""
+        is_valid, msg = validate_email(invalid_email)
+        assert is_valid is False</pre>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <h4>🎲 Test Data Generation Prompt</h4>
+        <p>Use this to generate realistic test fixtures and data.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Generate Test Data
+          </div>
+          <div class="ai-prompt-content">Generate pytest fixtures for testing an order management system:
+
+Models:
+- User (id, name, email, created_at)
+- Order (id, user_id, status, total, items)
+- OrderItem (id, order_id, product_id, quantity, price)
+
+Generate:
+1. Factory functions for creating test objects
+2. Sample data covering various scenarios
+3. Edge case data (empty orders, max quantities, etc.)
+4. Fixtures for database setup/teardown
+
+Use realistic but fake data (not real emails/names).</div>
+        </div>
+      </div>
+
+      <div class="info-box tip">
+        <span class="icon">💡</span>
+        <div class="content">
+          <strong>Pro Tip:</strong> After AI generates tests, review them for completeness. Ask: "What edge cases might be missing?" or "What could cause this function to fail in production?"
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🔍 Part 3: AI for Log Analysis & Troubleshooting</h2>
+      
+      <p>AI can quickly parse through logs and error messages to identify root causes.</p>
+
+      <div class="pattern-card">
+        <h4>📊 Error Analysis Prompt</h4>
+        <p>Use this when you have an error you need to debug.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Analyze Error
+          </div>
+          <div class="ai-prompt-content">Help me debug this error:
+
+**Error message:**
+```
+[paste error/stack trace here]
+```
+
+**Context:**
+- What I was trying to do: [brief description]
+- Environment: [Python version, OS, relevant packages]
+- Recent changes: [what changed before the error]
+
+Please:
+1. Explain what this error means
+2. Identify the likely root cause
+3. Suggest 3 possible solutions, ordered by likelihood
+4. Explain how to prevent this in the future</div>
+        </div>
+      </div>
+
+      <h3>Example: Error Analysis</h3>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">Error Analysis Result</span>
+          <span class="code-lang">Text</span>
+        </div>
+        <div class="code-content">
+<pre><strong>Error:</strong> sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) 
+UNIQUE constraint failed: users.email
+
+<strong>Root Cause:</strong> Attempting to insert a user with an email that 
+already exists in the database.
+
+<strong>Solutions (by likelihood):</strong>
+
+1. <strong>Check before insert</strong> (Most likely fix)
+   ```python
+   existing = await session.execute(
+       select(User).where(User.email == email)
+   )
+   if existing.scalar_one_or_none():
+       raise ValueError("Email already registered")
+   ```
+
+2. <strong>Use upsert pattern</strong> (If updates are acceptable)
+   ```python
+   from sqlalchemy.dialects.sqlite import insert
+   stmt = insert(User).values(email=email, name=name)
+   stmt = stmt.on_conflict_do_update(
+       index_elements=['email'],
+       set_=dict(name=name)
+   )
+   ```
+
+3. <strong>Handle exception gracefully</strong>
+   ```python
+   try:
+       session.add(user)
+       await session.commit()
+   except IntegrityError:
+       await session.rollback()
+       raise HTTPException(400, "Email already exists")
+   ```
+
+<strong>Prevention:</strong> Add email uniqueness validation at the API 
+layer before attempting database operations.</pre>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <h4>📜 Log Pattern Analysis Prompt</h4>
+        <p>Use this to analyze patterns in application logs.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Analyze Logs
+          </div>
+          <div class="ai-prompt-content">Analyze these application logs and identify:
+
+```
+[paste log excerpt here]
+```
+
+Please identify:
+1. Any error patterns or recurring issues
+2. Performance concerns (slow queries, timeouts)
+3. Security concerns (failed auth, suspicious patterns)
+4. Potential improvements to logging
+
+Summarize findings with severity levels (Critical/Warning/Info).</div>
+        </div>
+      </div>
+
+      <div class="info-box warning">
+        <span class="icon">⚠️</span>
+        <div class="content">
+          <strong>Security Note:</strong> Before pasting logs into AI, sanitize them! Remove IP addresses, user IDs, tokens, and any PII. Use placeholders like [USER_ID] or [TOKEN].
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>📋 DevOps Prompt Library</h2>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Prompt</th>
+            <th>Use Case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CI/CD</td>
+            <td>Generate Pipeline</td>
+            <td>New project setup</td>
+          </tr>
+          <tr>
+            <td>CI/CD</td>
+            <td>Add Pipeline Stage</td>
+            <td>Extending existing pipeline</td>
+          </tr>
+          <tr>
+            <td>Docker</td>
+            <td>Generate Dockerfile</td>
+            <td>Containerizing applications</td>
+          </tr>
+          <tr>
+            <td>Docker</td>
+            <td>Optimize Dockerfile</td>
+            <td>Reducing image size</td>
+          </tr>
+          <tr>
+            <td>Testing</td>
+            <td>Generate Test Cases</td>
+            <td>Improving test coverage</td>
+          </tr>
+          <tr>
+            <td>Testing</td>
+            <td>Generate Test Data</td>
+            <td>Creating fixtures</td>
+          </tr>
+          <tr>
+            <td>Debugging</td>
+            <td>Analyze Error</td>
+            <td>Understanding stack traces</td>
+          </tr>
+          <tr>
+            <td>Debugging</td>
+            <td>Analyze Logs</td>
+            <td>Finding patterns in logs</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="checkpoint">
+      <h4>✅ Module 3 Checkpoint</h4>
+      <p>Before moving to Module 4, verify you can:</p>
+      <ul>
+        <li><span style="color: #00ff88;">☐</span> Generate CI/CD pipelines with AI</li>
+        <li><span style="color: #00ff88;">☐</span> Create Dockerfiles using AI prompts</li>
+        <li><span style="color: #00ff88;">☐</span> Generate comprehensive test cases</li>
+    

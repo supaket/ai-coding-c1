@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 1: Understanding Your Workspace & AI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f0f23; color: #e0e0e0; line-height: 1.7; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+    .nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 32px; }
+    .nav a { color: #00d4ff; text-decoration: none; font-size: 14px; }
+    .nav .module-indicator { background: rgba(0,212,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 13px; color: #00d4ff; }
+    .module-header { margin-bottom: 40px; }
+    .module-header .badge { display: inline-block; background: linear-gradient(135deg, #00d4ff, #0099ff); color: #000; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 12px; }
+    .module-header h1 { font-size: 36px; color: #fff; margin-bottom: 12px; }
+    .module-header .subtitle { font-size: 18px; color: #a0a0a0; }
+    .meta-bar { display: flex; gap: 24px; margin: 24px 0; flex-wrap: wrap; }
+    .meta-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #888; }
+    .objectives { background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,255,136,0.02)); border: 1px solid rgba(0,255,136,0.3); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
+    .objectives h3 { color: #00ff88; margin-bottom: 16px; font-size: 16px; }
+    .objectives ul { list-style: none; padding: 0; }
+    .objectives li { padding: 8px 0; padding-left: 24px; position: relative; color: #c0c0c0; }
+    .objectives li::before { content: "✓"; position: absolute; left: 0; color: #00ff88; }
+    .section { margin-bottom: 48px; }
+    .section h2 { font-size: 24px; color: #fff; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #00d4ff; }
+    .section h3 { font-size: 18px; color: #00d4ff; margin: 24px 0 12px; }
+    .section p { color: #b0b0b0; margin-bottom: 16px; }
+    .exercise { background: rgba(138,43,226,0.1); border: 1px solid rgba(138,43,226,0.3); border-radius: 12px; padding: 24px; margin: 20px 0; }
+    .exercise-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; color: #bb86fc; font-weight: 600; font-size: 16px; }
+    .exercise-content { color: #c0c0c0; }
+    .exercise-content ol, .exercise-content ul { margin-left: 20px; margin-top: 12px; }
+    .exercise-content li { margin-bottom: 8px; }
+    .info-box { border-radius: 8px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 12px; }
+    .info-box.tip { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); }
+    .info-box.warning { background: rgba(255,193,7,0.1); border: 1px solid rgba(255,193,7,0.3); }
+    .info-box.danger { background: rgba(255,71,87,0.1); border: 1px solid rgba(255,71,87,0.3); }
+    .info-box .icon { font-size: 20px; flex-shrink: 0; }
+    .info-box .content { font-size: 14px; color: #c0c0c0; }
+    .info-box .content strong { color: #fff; }
+    .workflow-diagram { background: #1a1a2e; border-radius: 12px; padding: 24px; margin: 20px 0; text-align: center; }
+    .workflow-diagram pre { font-family: 'Consolas', monospace; font-size: 12px; color: #00d4ff; display: inline-block; text-align: left; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    th { background: rgba(255,255,255,0.05); color: #00d4ff; font-size: 13px; }
+    td { color: #c0c0c0; font-size: 14px; }
+    .matrix { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin: 20px 0; }
+    .matrix h4 { color: #fff; margin-bottom: 16px; font-size: 16px; }
+    .matrix-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .matrix-item { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px; }
+    .matrix-item.green { border-left: 3px solid #00ff88; }
+    .matrix-item.yellow { border-left: 3px solid #ffc107; }
+    .matrix-item.red { border-left: 3px solid #ff4757; }
+    .matrix-item.blue { border-left: 3px solid #00d4ff; }
+    .matrix-item h5 { color: #fff; font-size: 14px; margin-bottom: 8px; }
+    .matrix-item p { font-size: 13px; color: #888; margin: 0; }
+    .checkpoint { background: linear-gradient(135deg, #1a1a3e, #252550); border: 2px solid #00d4ff; border-radius: 12px; padding: 24px; margin: 32px 0; text-align: center; }
+    .checkpoint h4 { color: #00d4ff; margin-bottom: 12px; }
+    .checkpoint ul { list-style: none; padding: 0; text-align: left; max-width: 500px; margin: 0 auto; }
+    .checkpoint li { padding: 8px 0; color: #c0c0c0; display: flex; align-items: center; gap: 10px; }
+    .nav-footer { display: flex; justify-content: space-between; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .nav-btn { display: flex; align-items: center; gap: 8px; padding: 12px 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; text-decoration: none; font-size: 14px; }
+    .nav-btn:hover { background: rgba(0,212,255,0.1); border-color: #00d4ff; }
+    .nav-btn.primary { background: linear-gradient(135deg, #00d4ff, #0099ff); color: #000; border: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a href="00-course-overview.html">← Course Overview</a>
+      <span class="module-indicator">Module 1 of 5</span>
+      <a href="module-02-ai-coding-patterns.html">Module 2 →</a>
+    </nav>
+
+    <header class="module-header">
+      <span class="badge">Module 1</span>
+      <h1>Understanding Your Workspace & AI</h1>
+      <p class="subtitle">Map your current workflow, identify AI opportunities, and establish safe boundaries for AI adoption.</p>
+    </header>
+
+    <div class="meta-bar">
+      <div class="meta-item"><span>⏱️</span><span>45 minutes</span></div>
+      <div class="meta-item"><span>📝</span><span>3 exercises</span></div>
+      <div class="meta-item"><span>🎯</span><span>Workshop format</span></div>
+    </div>
+
+    <div class="objectives">
+      <h3>🎯 Learning Objectives</h3>
+      <ul>
+        <li>Map your current development workflow: people, tools, bottlenecks</li>
+        <li>Identify where AI adds the most value in your daily work</li>
+        <li>Understand AI applications: coding, reviews, docs, DevOps, testing</li>
+        <li>Recognize risks & boundaries: privacy, IP, security, governance</li>
+        <li>Create a personal AI opportunity assessment</li>
+      </ul>
+    </div>
+
+    <section class="section">
+      <h2>🗺️ Part 1: Mapping Your Current Workflow</h2>
+      
+      <p>Before integrating AI into your workflow, you need to understand your current development process. This exercise helps identify pain points where AI can provide the most value.</p>
+
+      <div class="workflow-diagram">
+<pre>
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│  Planning   │───▶│   Coding    │───▶│   Review    │───▶│   Testing   │
+│             │    │             │    │             │    │             │
+│ • Stories   │    │ • Writing   │    │ • PRs       │    │ • Unit      │
+│ • Design    │    │ • Debugging │    │ • Feedback  │    │ • Integr.   │
+│ • Research  │    │ • Refactor  │    │ • Fix       │    │ • E2E       │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+       │                  │                  │                  │
+       ▼                  ▼                  ▼                  ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                         AI Opportunity Zones                         │
+│  📝 Docs    🔍 Analysis    ✨ Generation    🧪 Testing    🔧 DevOps │
+└─────────────────────────────────────────────────────────────────────┘
+</pre>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-header">
+          <span>✏️</span> Exercise 1: Workflow Mapping (10 min)
+        </div>
+        <div class="exercise-content">
+          <p>Answer these questions about your current development workflow:</p>
+          <ol>
+            <li><strong>What takes the most time?</strong> (code reviews, debugging, documentation, testing...)</li>
+            <li><strong>Where do you context-switch most?</strong> (switching between tasks, waiting for feedback...)</li>
+            <li><strong>What's repetitive?</strong> (boilerplate code, similar bug fixes, routine configs...)</li>
+            <li><strong>Where do blockers occur?</strong> (waiting for reviews, unclear requirements, complex debugging...)</li>
+            <li><strong>What knowledge is siloed?</strong> (only one person knows the system, undocumented processes...)</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🤖 Part 2: Where AI Fits in Development</h2>
+      
+      <p>AI coding assistants can help across the entire development lifecycle. Here's where they provide the most value:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Activity</th>
+            <th>AI Application</th>
+            <th>Value Level</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Code Understanding</strong></td>
+            <td>Explain complex code, trace dependencies, document architecture</td>
+            <td>⭐⭐⭐⭐⭐ Very High</td>
+          </tr>
+          <tr>
+            <td><strong>Code Generation</strong></td>
+            <td>Write boilerplate, implement patterns, scaffold projects</td>
+            <td>⭐⭐⭐⭐ High</td>
+          </tr>
+          <tr>
+            <td><strong>Code Reviews</strong></td>
+            <td>Spot issues, suggest improvements, check best practices</td>
+            <td>⭐⭐⭐⭐ High</td>
+          </tr>
+          <tr>
+            <td><strong>Documentation</strong></td>
+            <td>Generate docs, READMEs, API descriptions, comments</td>
+            <td>⭐⭐⭐⭐⭐ Very High</td>
+          </tr>
+          <tr>
+            <td><strong>Testing</strong></td>
+            <td>Generate test cases, edge cases, fixtures, mocks</td>
+            <td>⭐⭐⭐⭐ High</td>
+          </tr>
+          <tr>
+            <td><strong>DevOps</strong></td>
+            <td>Create configs, Dockerfiles, CI/CD pipelines</td>
+            <td>⭐⭐⭐⭐ High</td>
+          </tr>
+          <tr>
+            <td><strong>Debugging</strong></td>
+            <td>Analyze errors, suggest fixes, explain stack traces</td>
+            <td>⭐⭐⭐⭐ High</td>
+          </tr>
+          <tr>
+            <td><strong>Learning</strong></td>
+            <td>Explain concepts, provide examples, answer questions</td>
+            <td>⭐⭐⭐⭐⭐ Very High</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>AI Value Matrix</h3>
+      
+      <div class="matrix">
+        <h4>Where AI Excels vs. Where Humans Lead</h4>
+        <div class="matrix-grid">
+          <div class="matrix-item green">
+            <h5>🟢 AI Excels</h5>
+            <p>Boilerplate code, documentation, test generation, explaining code, pattern matching, syntax help, config files</p>
+          </div>
+          <div class="matrix-item blue">
+            <h5>🔵 AI + Human Collaboration</h5>
+            <p>Code reviews, refactoring, debugging, architecture decisions, API design, performance optimization</p>
+          </div>
+          <div class="matrix-item yellow">
+            <h5>🟡 Human-Led, AI-Assisted</h5>
+            <p>Requirements gathering, system design, security review, business logic validation, UX decisions</p>
+          </div>
+          <div class="matrix-item red">
+            <h5>🔴 Human Required</h5>
+            <p>Final code approval, production deployment, customer communication, strategic decisions, ethics review</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-header">
+          <span>✏️</span> Exercise 2: AI Opportunity Assessment (10 min)
+        </div>
+        <div class="exercise-content">
+          <p>For each of your bottlenecks from Exercise 1, consider:</p>
+          <ol>
+            <li>Can AI help with this task? (Yes / Partially / No)</li>
+            <li>What's the potential time savings? (Hours per week)</li>
+            <li>What's the risk level? (Low / Medium / High)</li>
+            <li>What would you need to get started? (Tools, training, approval)</li>
+          </ol>
+          <p style="margin-top: 16px;"><strong>Prioritize:</strong> Start with high-value, low-risk opportunities.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>⚠️ Part 3: Risks & Boundaries</h2>
+      
+      <p>AI adoption requires careful consideration of risks. Understanding boundaries protects you, your team, and your organization.</p>
+
+      <div class="info-box danger">
+        <span class="icon">🔒</span>
+        <div class="content">
+          <strong>Privacy & Data Security</strong><br>
+          Never paste sensitive data into AI tools: API keys, passwords, customer PII, internal credentials, proprietary algorithms, or confidential business logic.
+        </div>
+      </div>
+
+      <div class="info-box warning">
+        <span class="icon">©️</span>
+        <div class="content">
+          <strong>Intellectual Property</strong><br>
+          AI-generated code may have licensing implications. Understand your organization's policy on AI-generated content. Some AI tools train on your inputs—check terms of service.
+        </div>
+      </div>
+
+      <div class="info-box warning">
+        <span class="icon">🔍</span>
+        <div class="content">
+          <strong>Code Quality & Accuracy</strong><br>
+          AI can generate plausible but incorrect code. Always review, test, and validate AI output. Don't trust AI blindly for security-critical or business-critical logic.
+        </div>
+      </div>
+
+      <div class="info-box tip">
+        <span class="icon">📋</span>
+        <div class="content">
+          <strong>Governance Checklist</strong><br>
+          Before using AI: ✓ Check company policy ✓ Understand data handling ✓ Know the review process ✓ Document AI usage ✓ Have human approval workflows
+        </div>
+      </div>
+
+      <h3>Safe AI Usage Patterns</h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>✅ Safe to Share</th>
+            <th>❌ Never Share</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Public documentation questions</td>
+            <td>API keys, passwords, tokens</td>
+          </tr>
+          <tr>
+            <td>Generic code patterns</td>
+            <td>Customer data or PII</td>
+          </tr>
+          <tr>
+            <td>Open-source library usage</td>
+            <td>Proprietary algorithms</td>
+          </tr>
+          <tr>
+            <td>Learning/educational queries</td>
+            <td>Internal security details</td>
+          </tr>
+          <tr>
+            <td>Anonymized/sanitized examples</td>
+            <td>Confidential business logic</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="exercise">
+        <div class="exercise-header">
+          <span>✏️</span> Exercise 3: Risk Assessment (10 min)
+        </div>
+        <div class="exercise-content">
+          <p>For your AI opportunities from Exercise 2, assess the risks:</p>
+          <ol>
+            <li><strong>Data Sensitivity:</strong> What data would you share with AI? Is it safe?</li>
+            <li><strong>IP Concerns:</strong> Could AI output create licensing issues?</li>
+            <li><strong>Quality Risk:</strong> What's the impact if AI generates incorrect code?</li>
+            <li><strong>Governance:</strong> Does your organization have AI usage policies?</li>
+          </ol>
+          <p style="margin-top: 16px;"><strong>Create guardrails:</strong> Define what you will and won't share with AI before you start.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>📊 Your AI Adoption Readiness</h2>
+      
+      <p>Based on the exercises, you should now have:</p>
+      
+      <div class="matrix">
+        <div class="matrix-grid">
+          <div class="matrix-item green">
+            <h5>🗺️ Workflow Map</h5>
+            <p>Understanding of where time is spent and where bottlenecks occur</p>
+          </div>
+          <div class="matrix-item blue">
+            <h5>🎯 AI Opportunities</h5>
+            <p>List of tasks where AI can add value, prioritized by impact</p>
+          </div>
+          <div class="matrix-item yellow">
+            <h5>⚠️ Risk Assessment</h5>
+            <p>Understanding of what's safe to share and what requires caution</p>
+          </div>
+          <div class="matrix-item green">
+            <h5>📋 Guardrails</h5>
+            <p>Personal rules for safe and effective AI usage</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="checkpoint">
+      <h4>✅ Module 1 Checkpoint</h4>
+      <p>Before moving to Module 2, verify:</p>
+      <ul>
+        <li><span style="color: #00ff88;">☐</span> Completed workflow mapping exercise</li>
+        <li><span style="color: #00ff88;">☐</span> Identified top 3 AI opportunity areas</li>
+        <li><span style="color: #00ff88;">☐</span> Assessed risks for each opportunity</li>
+        <li><span style="color: #00ff88;">☐</span> Defined personal AI usage guardrails</li>
+        <li><span style="color: #00ff88;">☐</span> Know your organization's AI policy (or know to ask)</li>
+      </ul>
+    </div>
+
+    <div class="nav-footer">
+      <a href="00-course-overview.html" class="nav-btn">← Course Overview</a>
+      <a href="module-02-ai-coding-patterns.html" class="nav-btn primary">Module 2: AI Coding Patterns →</a>
+    </div>
+  </div>
+</body>
+</html>

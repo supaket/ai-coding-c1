@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 4: Legacy to Microservice with AI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f0f23; color: #e0e0e0; line-height: 1.7; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+    .nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 32px; }
+    .nav a { color: #00d4ff; text-decoration: none; font-size: 14px; }
+    .nav .module-indicator { background: rgba(0,255,136,0.2); padding: 6px 14px; border-radius: 20px; font-size: 13px; color: #00ff88; }
+    .module-header { margin-bottom: 40px; }
+    .module-header .badge { display: inline-block; background: linear-gradient(135deg, #00ff88, #00d4ff); color: #000; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 12px; }
+    .module-header .new-tag { background: #ff6b6b; color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-left: 10px; }
+    .module-header h1 { font-size: 36px; color: #fff; margin-bottom: 12px; }
+    .module-header .subtitle { font-size: 18px; color: #a0a0a0; }
+    .meta-bar { display: flex; gap: 24px; margin: 24px 0; flex-wrap: wrap; }
+    .meta-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #888; }
+    .objectives { background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,255,136,0.02)); border: 1px solid rgba(0,255,136,0.3); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
+    .objectives h3 { color: #00ff88; margin-bottom: 16px; font-size: 16px; }
+    .objectives ul { list-style: none; padding: 0; }
+    .objectives li { padding: 8px 0; padding-left: 24px; position: relative; color: #c0c0c0; }
+    .objectives li::before { content: "✓"; position: absolute; left: 0; color: #00ff88; }
+    .section { margin-bottom: 48px; }
+    .section h2 { font-size: 24px; color: #fff; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #00ff88; }
+    .section h3 { font-size: 18px; color: #00d4ff; margin: 24px 0 12px; }
+    .section p { color: #b0b0b0; margin-bottom: 16px; }
+    .step { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .step-number { background: #00ff88; color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+    .step-title { font-size: 18px; color: #fff; font-weight: 600; }
+    .step-time { margin-left: auto; font-size: 13px; color: #888; background: rgba(255,255,255,0.05); padding: 4px 12px; border-radius: 12px; }
+    .ai-prompt { background: linear-gradient(135deg, rgba(138,43,226,0.1), rgba(138,43,226,0.02)); border: 1px solid rgba(138,43,226,0.4); border-radius: 12px; padding: 20px; margin: 20px 0; }
+    .ai-prompt-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; color: #bb86fc; font-weight: 600; }
+    .ai-prompt-content { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px; font-family: 'Consolas', monospace; font-size: 13px; color: #e0e0e0; line-height: 1.6; white-space: pre-wrap; }
+    .code-block { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 8px; margin: 16px 0; overflow: hidden; }
+    .code-header { background: #252540; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2a4a; }
+    .code-filename { font-size: 13px; color: #00d4ff; font-family: 'Consolas', monospace; }
+    .code-lang { font-size: 11px; color: #888; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; }
+    .code-content { padding: 16px; overflow-x: auto; }
+    .code-content pre { margin: 0; font-family: 'Consolas', monospace; font-size: 13px; line-height: 1.5; color: #e0e0e0; }
+    .command-block { background: #0d0d1a; border: 1px solid #333; border-radius: 8px; padding: 16px; margin: 16px 0; font-family: 'Consolas', monospace; font-size: 14px; }
+    .command-block .prompt { color: #00ff88; }
+    .command-block .command { color: #fff; }
+    .info-box { border-radius: 8px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 12px; }
+    .info-box.tip { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); }
+    .info-box.warning { background: rgba(255,193,7,0.1); border: 1px solid rgba(255,193,7,0.3); }
+    .info-box.success { background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); }
+    .info-box .icon { font-size: 20px; flex-shrink: 0; }
+    .info-box .content { font-size: 14px; color: #c0c0c0; }
+    .expected-output { background: rgba(0,255,136,0.05); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 16px; margin: 16px 0; }
+    .expected-output h5 { color: #00ff88; font-size: 13px; margin-bottom: 12px; text-transform: uppercase; }
+    .expected-output pre { font-family: 'Consolas', monospace; font-size: 12px; color: #a0a0a0; white-space: pre-wrap; }
+    .architecture-box { background: #1a1a2e; border-radius: 12px; padding: 24px; margin: 20px 0; text-align: center; }
+    .architecture-box pre { font-family: 'Consolas', monospace; font-size: 12px; color: #00d4ff; display: inline-block; text-align: left; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    th { background: rgba(255,255,255,0.05); color: #00d4ff; font-size: 13px; }
+    td { color: #c0c0c0; font-size: 14px; }
+    .checkpoint { background: linear-gradient(135deg, #1a1a3e, #252550); border: 2px solid #00ff88; border-radius: 12px; padding: 24px; margin: 32px 0; text-align: center; }
+    .checkpoint h4 { color: #00ff88; margin-bottom: 12px; }
+    .checkpoint ul { list-style: none; padding: 0; text-align: left; max-width: 500px; margin: 0 auto; }
+    .checkpoint li { padding: 8px 0; color: #c0c0c0; display: flex; align-items: center; gap: 10px; }
+    .nav-footer { display: flex; justify-content: space-between; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .nav-btn { display: flex; align-items: center; gap: 8px; padding: 12px 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; text-decoration: none; font-size: 14px; }
+    .nav-btn:hover { background: rgba(0,212,255,0.1); border-color: #00d4ff; }
+    .nav-btn.primary { background: linear-gradient(135deg, #00ff88, #00d4ff); color: #000; border: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a href="module-03-devops-testing-quality.html">← Module 3</a>
+      <span class="module-indicator">🆕 Module 4 of 5</span>
+      <a href="module-05-ai-augmented-workflow.html">Module 5 →</a>
+    </nav>
+
+    <header class="module-header">
+      <span class="badge">🆕 NEW</span>
+      <h1>Legacy to Microservice with AI<span class="new-tag">DEEP LAB</span></h1>
+      <p class="subtitle">Hands-on migration of a Flask monolith to FastAPI microservices using AI-assisted analysis, scaffolding, and testing.</p>
+    </header>
+
+    <div class="meta-bar">
+      <div class="meta-item"><span>⏱️</span><span>90 minutes</span></div>
+      <div class="meta-item"><span>🧪</span><span>4 labs</span></div>
+      <div class="meta-item"><span>💻</span><span>Working code</span></div>
+      <div class="meta-item"><span>🤖</span><span>6 AI prompts</span></div>
+    </div>
+
+    <div class="objectives">
+      <h3>🎯 Learning Objectives</h3>
+      <ul>
+        <li>Analyze monolith code and identify service boundaries</li>
+        <li>Use AI to scaffold microservice projects</li>
+        <li>Extract and migrate business logic with AI assistance</li>
+        <li>Design database separation strategies</li>
+        <li>Create API contracts using OpenAPI</li>
+        <li>Generate migration tests: unit, integration, contract</li>
+      </ul>
+    </div>
+
+    <section class="section">
+      <h2>🎯 Lab Scenario: ShopFast E-commerce</h2>
+      
+      <p>You're working on ShopFast, a Flask monolith handling users, products, orders, and inventory. The team has decided to extract the <strong>Order Service</strong> as the first microservice.</p>
+
+      <div class="architecture-box">
+<pre>
+<strong>BEFORE: Monolith</strong>                      <strong>AFTER: Microservices</strong>
+
+┌─────────────────────┐              ┌─────────────────────┐
+│    Flask App        │              │   API Gateway       │
+│  ┌───────────────┐  │              └──────────┬──────────┘
+│  │ Users         │  │                         │
+│  │ Products      │  │    ┌────────────────────┼────────────────────┐
+│  │ Orders  ◄─────┼──┼────┤                    │                    │
+│  │ Inventory     │  │    ▼                    ▼                    ▼
+│  │ Payments      │  │ ┌─────────┐      ┌─────────────┐      ┌─────────┐
+│  └───────────────┘  │ │ User    │      │   Order     │      │ Product │
+│         │           │ │ Service │      │   Service   │      │ Service │
+│    ┌────┴────┐      │ └────┬────┘      └──────┬──────┘      └────┬────┘
+│    │ SQLite  │      │      │                  │                  │
+│    └─────────┘      │      ▼                  ▼                  ▼
+└─────────────────────┘   [Users DB]        [Orders DB]        [Products DB]
+</pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🔬 Lab 1: Analyze the Monolith (20 min)</h2>
+      
+      <div class="step">
+        <div class="step-header">
+          <span class="step-number">1</span>
+          <span class="step-title">Setup the Legacy Application</span>
+          <span class="step-time">5 min</span>
+        </div>
+
+        <div class="command-block">
+          <span class="prompt">$</span> <span class="command">cd code/legacy-app</span><br>
+          <span class="prompt">$</span> <span class="command">pip install -r requirements.txt</span><br>
+          <span class="prompt">$</span> <span class="command">python seed_data.py</span><br>
+          <span class="prompt">$</span> <span class="command">python app.py</span>
+        </div>
+
+        <p>Visit <a href="http://localhost:5000/api/orders" style="color: #00d4ff;">http://localhost:5000/api/orders</a> to see the current API.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-number">2</span>
+          <span class="step-title">AI-Assisted Code Analysis</span>
+          <span class="step-time">15 min</span>
+        </div>
+
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt #1: Analyze Legacy Code
+          </div>
+          <div class="ai-prompt-content">Analyze this Flask monolith and identify:
+
+1. **Service Boundaries**: Which parts could become separate services?
+2. **Data Dependencies**: How are the models related?
+3. **API Surface**: What endpoints exist for each domain?
+4. **Coupling Issues**: Where is the code tightly coupled?
+5. **Migration Risks**: What could break during extraction?
+
+Focus especially on the Order-related code.
+
+```python
+[paste app.py and models.py content here]
+```</div>
+        </div>
+
+        <div class="expected-output">
+          <h5>✓ AI Should Identify</h5>
+          <pre>
+Service Boundaries:
+- Users: Authentication, user profiles
+- Products: Catalog, inventory
+- Orders: Order lifecycle, items, totals
+- Payments: (Future) payment processing
+
+Data Dependencies:
+- Orders → Users (user_id FK)
+- Orders → Products (via OrderItems)
+- OrderItems → Orders (order_id FK)
+
+Order API Surface:
+- POST /api/orders (create)
+- GET /api/orders (list)
+- GET /api/orders/{id} (detail)
+- PATCH /api/orders/{id} (update status)
+- GET /api/users/{id}/orders (user's orders)
+
+Coupling Issues:
+- Direct SQLAlchemy queries in route handlers
+- No service layer abstraction
+- Shared database session across all domains</pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🏗️ Lab 2: Scaffold the Microservice (25 min)</h2>
+      
+      <div class="step">
+        <div class="step-header">
+          <span class="step-number">3</span>
+          <span class="step-title">Generate Project Structure with AI</span>
+          <span class="step-time">10 min</span>
+        </div>
+
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt #2: Generate Microservice Structure
+          </div>
+          <div class="ai-prompt-content">Create a FastAPI microservice project structure for an Order Service.
+
+Requirements:
+- FastAPI with async support
+- SQLAlchemy 2.0 (Mapped syntax)
+- Pydantic v2 for schemas
+- Clean architecture (routes → services → repositories)
+- Configuration with Pydantic Settings
+- Health check endpoint
+
+Models to migrate:
+- Order (id, user_id, status, total, shipping_address, created_at)
+- OrderItem (id, order_id, product_id, quantity, unit_price)
+
+Generate:
+1. Directory structure
+2. Configuration file
+3. Database setup
+4. Model definitions
+5. Pydantic schemas</div>
+        </div>
+
+        <p>Create the project structure:</p>
+
+        <div class="command-block">
+          <span class="prompt">$</span> <span class="command">mkdir -p order-service/app/{api/v1,core,models,schemas,services,repositories}</span><br>
+          <span class="prompt">$</span> <span class="command">touch order-service/app/{__init__.py,main.py}</span><br>
+          <span class="prompt">$</span> <span class="command">touch order-service/app/api/__init__.py</span><br>
+          <span class="prompt">$</span> <span class="command">touch order-service/app/api/v1/{__init__.py,health.py,orders.py}</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-number">4</span>
+          <span class="step-title">Convert Models to SQLAlchemy 2.0</span>
+          <span class="step-time">15 min</span>
+        </div>
+
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt #3: Convert Models
+          </div>
+          <div class="ai-prompt-content">Convert this SQLAlchemy 1.x model to SQLAlchemy 2.0 with Mapped syntax:
+
+```python
+# Legacy model
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    status = db.Column(db.String(20), default='pending')
+    total = db.Column(db.Numeric(10, 2), default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    items = db.relationship('OrderItem', backref='order')
+```
+
+Requirements:
+- Use Mapped[] type hints
+- Add proper indexes
+- Include created_at and updated_at
+- Define relationship properly
+- Add Enum for status</div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-filename">app/models/order.py</span>
+            <span class="code-lang">Python</span>
+          </div>
+          <div class="code-content">
+<pre>from datetime import datetime
+from decimal import Decimal
+from enum import Enum
+from typing import List, Optional
+from sqlalchemy import String, Numeric, ForeignKey, Index
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.core.database import Base
+
+
+class OrderStatus(str, Enum):
+    PENDING = "pending"
+    CONFIRMED = "confirmed"
+    PROCESSING = "processing"
+    SHIPPED = "shipped"
+    DELIVERED = "delivered"
+    CANCELLED = "cancelled"
+
+
+class Order(Base):
+    __tablename__ = "orders"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(index=True)
+    status: Mapped[str] = mapped_column(String(20), default=OrderStatus.PENDING.value)
+    total: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=Decimal("0.00"))
+    shipping_address: Mapped[Optional[str]] = mapped_column(String(500))
+    notes: Mapped[Optional[str]] = mapped_column(String(1000))
+    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    items: Mapped[List["OrderItem"]] = relationship(
+        back_populates="order",
+        cascade="all, delete-orphan"
+    )
+    
+    __table_args__ = (
+        Index("idx_user_status", "user_id", "status"),
+    )</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>⚙️ Lab 3: Implement Business Logic (25 min)</h2>
+      
+      <div class="step">
+        <div class="step-header">
+          <span class="step-number">5</span>
+          <span class="step-title">Create Repository and Service Layers</span>
+          <span class="step-time">15 min</span>
+        </div>
+
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt #4: Extract Business Logic
+          </div>
+          <div class="ai-prompt-content">Migrate this Flask route logic to a clean service architecture:
+
+```python
+# Legacy Flask route
+@app.route('/api/orders', methods=['POST'])
+def create_order():
+    data = request.json
+    order = Order(user_id=data['user_id'], ...)
+    for item in data['items']:
+        order_item = OrderItem(...)
+        order.items.append(order_item)
+    db.session.add(order)
+    db.session.commit()
+    return jsonify(order.to_dict()), 201
+```
+
+Create:
+1. OrderRepository (data access only)
+2. OrderService (business logic, validation)
+3. FastAPI route that uses the service
+
+Include:
+- Status transition validation
+- Total calculation
+- Proper error handling with custom exceptions</div>
+        </div>
+
+        <div class="architecture-box">
+<pre>
+<strong>Clean Architecture Layers</strong>
+
+┌─────────────────────────────────────────────────────────────┐
+│  API Layer (FastAPI Routes)                                  │
+│  - HTTP handling, request/response                           │
+├─────────────────────────────────────────────────────────────┤
+│  Service Layer (Business Logic)                              │
+│  - Validation, status transitions, calculations              │
+├─────────────────────────────────────────────────────────────┤
+│  Repository Layer (Data Access)                              │
+│  - CRUD operations, queries                                  │
+├─────────────────────────────────────────────────────────────┤
+│  Models (SQLAlchemy) + Schemas (Pydantic)                    │
+└─────────────────────────────────────────────────────────────┘
+</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-number">6</span>
+          <span class="step-title">Define API Contract (OpenAPI)</span>
+          <span class="step-time">10 min</span>
+        </div>
+
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt #5: Generate API Contract
+          </div>
+          <div class="ai-prompt-content">Generate Pydantic schemas for the Order API that will produce good OpenAPI documentation.
+
+Endpoints:
+- POST /orders → OrderCreate → OrderResponse
+- GET /orders → List[OrderSummary] with pagination
+- GET /orders/{id} → OrderResponse with items
+- PATCH /orders/{id} → OrderUpdate → OrderResponse
+
+Include:
+- Field validation (min/max values, patterns)
+- Examples in schema definitions
+- Computed fields where appropriate
+- Proper HTTP status codes</div>
+        </div>
+
+        <div class="info-box success">
+          <span class="icon">✨</span>
+          <div class="content">
+            <strong>API-First Design:</strong> FastAPI automatically generates OpenAPI docs from your Pydantic schemas. Well-designed schemas = excellent API documentation for free.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🧪 Lab 4: Migration Testing (20 min)</h2>
+      
+      <div class="step">
+        <div class="step-header">
+          <span class="step-number">7</span>
+          <span class="step-title">Generate Migration Tests</span>
+          <span class="step-time">20 min</span>
+        </div>
+
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt #6: Generate Migration Tests
+          </div>
+          <div class="ai-prompt-content">Generate a test suite to verify the migration maintains feature parity:
+
+Test Categories:
+1. **Unit Tests** - Service layer logic
+   - Order creation calculates total correctly
+   - Status transitions follow valid state machine
+   - Invalid data raises proper exceptions
+
+2. **Integration Tests** - API endpoints
+   - Create order returns 201 with correct data
+   - Get order returns all items
+   - Update with invalid status returns 400
+
+3. **Contract Tests** - API response format
+   - Response matches OpenAPI schema
+   - Required fields are present
+   - Date formats are ISO 8601
+
+Use pytest with async fixtures for FastAPI testing.</div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-filename">tests/test_migration_parity.py</span>
+            <span class="code-lang">Python</span>
+          </div>
+          <div class="code-content">
+<pre>"""Migration parity tests - ensure new service matches legacy behavior."""
+
+import pytest
+from decimal import Decimal
+
+
+class TestOrderCreationParity:
+    """Verify order creation matches legacy behavior."""
+    
+    @pytest.mark.asyncio
+    async def test_order_total_calculated_correctly(self, client):
+        """Total should sum item quantities × prices (like legacy)."""
+        response = await client.post("/api/v1/orders", json={
+            "user_id": 1,
+            "items": [
+                {"product_id": 1, "quantity": 2},  # 2 × $100 = $200
+                {"product_id": 2, "quantity": 1},  # 1 × $50 = $50
+            ]
+        })
+        
+        assert response.status_code == 201
+        assert Decimal(response.json()["total"]) == Decimal("250.00")
+    
+    @pytest.mark.asyncio
+    async def test_order_starts_as_pending(self, client):
+        """New orders should have 'pending' status (like legacy)."""
+        response = await client.post("/api/v1/orders", json={
+            "user_id": 1,
+            "items": [{"product_id": 1, "quantity": 1}]
+        })
+        
+        assert response.json()["status"] == "pending"
+
+
+class TestStatusTransitionParity:
+    """Verify status transitions match legacy rules."""
+    
+    @pytest.mark.asyncio
+    async def test_valid_transition_pending_to_confirmed(self, client, sample_order):
+        """Should allow pending → confirmed."""
+        response = await client.patch(
+            f"/api/v1/orders/{sample_order.id}",
+            json={"status": "confirmed"}
+        )
+        assert response.status_code == 200
+        assert response.json()["status"] == "confirmed"
+    
+    @pytest.mark.asyncio
+    async def test_invalid_transition_pending_to_delivered(self, client, sample_order):
+        """Should reject pending → delivered (skip states)."""
+        response = await client.patch(
+            f"/api/v1/orders/{sample_order.id}",
+            json={"status": "delivered"}
+        )
+        assert response.status_code == 400</pre>
+          </div>
+        </div>
+
+        <div class="command-block">
+          <span class="prompt">$</span> <span class="command">cd order-service</span><br>
+          <span class="prompt">$</span> <span class="command">pytest tests/ -v</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>📊 Database Separation Strategy</h2>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Strategy</th>
+            <th>Description</th>
+            <th>When to Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Shared Database</strong></td>
+            <td>Both services read/write same tables</td>
+            <td>Initial migration, testing phase</td>
+          </tr>
+          <tr>
+            <td><strong>Database View</strong></td>
+            <td>New service reads via view, old writes</td>
+            <td>Gradual migration, read-heavy</td>
+          </tr>
+          <tr>
+            <td><strong>Sync Replication</strong></td>
+            <td>Copy data to separate database</td>
+            <td>Need isolation, can handle lag</td>
+          </tr>
+          <tr>
+            <td><strong>Event Sourcing</strong></td>
+            <td>Publish changes as events</td>
+            <td>Long-term, eventual consistency OK</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box tip">
+        <span class="icon">💡</span>
+        <div class="content">
+          <strong>Start Simple:</strong> Begin with a shared database during migration. Once the service is stable, gradually introduce database separation using one of the more sophisticated patterns.
+        </div>
+      </div>
+    </section>
+
+    <div class="checkpoint">
+      <h4>✅ Module 4 Checkpoint</h4>
+      <p>Verify your migration:</p>
+      <ul>
+        <li><span style="color: #00ff88;">☐</span> Legacy app analyzed and boundaries identified</li>
+        <li><span style="color: #00ff88;">☐</span> FastAPI project structure created</li>
+        <li><span style="color: #00ff88;">☐</span> Models converted to SQLAlchemy 2.0</li>
+        <li><span style="color: #00ff88;">☐</span> Service layer implements business logic</li>
+        <li><span style="color: #00ff88;">☐</span> API contracts defined with Pydantic</li>
+        <li><span style="color: #00ff88;">☐</span> Migration tests passing</li>
+        <li><span style="color: #00ff88;">☐</span> Service runs and health check works</li>
+      </ul>
+    </div>
+
+    <section class="section">
+      <h2>📌 AI Contribution Summary</h2>
+      <table>
+        <thead><tr><th>Task</th><th>AI %</th><th>Human Required</th></tr></thead>
+        <tbody>
+          <tr><td>Code analysis</td><td>85%</td><td>Validate boundaries, business context</td></tr>
+          <tr><td>Project scaffolding</td><td>90%</td><td>Team conventions, naming</td></tr>
+          <tr><td>Model conversion</td><td>80%</td><td>Review relationships, indexes</td></tr>
+          <tr><td>Business logic extraction</td><td>70%</td><td>Validate rules, edge cases</td></tr>
+          <tr><td>API contract design</td><td>75%</td><td>Business requirements</td></tr>
+          <tr><td>Test generation</td><td>85%</td><td>Parity verification, coverage</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="nav-footer">
+      <a href="module-03-devops-testing-quality.html" class="nav-btn">← Module 3</a>
+      <a href="module-05-ai-augmented-workflow.html" class="nav-btn primary">Module 5: Your AI Workflow →</a>
+    </div>
+  </div>
+</body>
+</html>

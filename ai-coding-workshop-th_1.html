@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Coding Workshop - การใช้ AI ในงาน Software Engineering</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a12;
+            --bg-card: #12121c;
+            --bg-card-hover: #1a1a28;
+            --bg-surface: #16161f;
+            --text-primary: #ffffff;
+            --text-secondary: #a8a8b8;
+            --text-muted: #6b6b7b;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #00d4ff;
+            --accent-green: #10b981;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
+            --border-color: #2a2a3a;
+            --gradient-blue: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            --gradient-green: linear-gradient(135deg, #10b981 0%, #00d4ff 100%);
+            --gradient-purple: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            --gradient-warm: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.15;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .bg-glow-1 {
+            top: -200px;
+            left: -200px;
+            background: var(--accent-blue);
+        }
+
+        .bg-glow-2 {
+            bottom: -200px;
+            right: -200px;
+            background: var(--accent-purple);
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(50px, 50px); }
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 18, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .nav-logo-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--gradient-blue);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-cyan);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        /* Sections */
+        .section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-hero {
+            padding-top: 10rem;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Hero */
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 100px;
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+            margin-bottom: 2rem;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #a8a8b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-title span {
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-blue);
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin: 0 auto 1rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 1rem;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-blue);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 20px 60px rgba(59, 130, 246, 0.1);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.375rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Theory Section */
+        .theory-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .theory-visual {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .llm-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .llm-flow {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .llm-node {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .llm-node-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .llm-node-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .llm-arrow {
+            color: var(--accent-cyan);
+            font-size: 1.5rem;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #0d1117;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: #161b22;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dot-red { background: #ff5f56; }
+        .code-dot-yellow { background: #ffbd2e; }
+        .code-dot-green { background: #27c93f; }
+
+        .code-filename {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .code-body {
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.8;
+            overflow-x: auto;
+        }
+
+        .code-body pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        .code-comment { color: #6e7681; }
+        .code-keyword { color: #ff7b72; }
+        .code-string { color: #a5d6ff; }
+        .code-function { color: #d2a8ff; }
+        .code-variable { color: #ffa657; }
+        .code-type { color: #79c0ff; }
+
+        /* Prompt Box */
+        .prompt-box {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .prompt-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .prompt-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-purple);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+        }
+
+        .prompt-label {
+            font-weight: 600;
+            color: var(--accent-purple);
+        }
+
+        .prompt-content {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            white-space: pre-wrap;
+        }
+
+        /* Use Case Cards */
+        .usecase-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            gap: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .usecase-card:hover {
+            transform: translateX(8px);
+            border-color: var(--accent-green);
+        }
+
+        .usecase-number {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-green);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .usecase-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .usecase-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .usecase-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .usecase-tag {
+            padding: 0.25rem 0.75rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+            border-radius: 100px;
+            font-size: 0.8rem;
+        }
+
+        /* Case Study */
+        .case-study-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .case-study-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .case-study-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-orange);
+        }
+
+        .case-study-logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .case-study-name {
+            font-size: 1.375rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .case-study-tool {
+            color: var(--accent-orange);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .case-study-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .case-study-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .case-study-stat-icon {
+            width: 28px;
+            height: 28px;
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-orange);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        .case-study-stat-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Workshop Section */
+        .workshop-container {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 32px;
+            padding: 4rem;
+        }
+
+        .workshop-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .workshop-step {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .step-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .step-number {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-blue);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .step-line {
+            width: 2px;
+            height: 100%;
+            min-height: 100px;
+            background: linear-gradient(to bottom, var(--accent-blue), transparent);
+            margin-top: 0.5rem;
+        }
+
+        .step-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .step-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .step-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        /* Comparison Table */
+        .table-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th {
+            background: var(--bg-surface);
+            padding: 1.25rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comparison-table td {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover td {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .tool-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .tool-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .tool-name {
+            font-weight: 600;
+        }
+
+        .feature-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            margin: 0.25rem;
+        }
+
+        /* Alert Box */
+        .alert-box {
+            display: flex;
+            gap: 1rem;
+            padding: 1.25rem 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .alert-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .alert-content {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 4rem 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+        }
+
+        /* Flow Diagram */
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .flow-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .flow-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+        }
+
+        .flow-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .theory-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .case-study-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .workshop-container {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.25rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-table {
+                font-size: 0.875rem;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <div class="nav-logo">
+                <div class="nav-logo-icon">🤖</div>
+                <span>AI Coding Workshop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#theory">ทฤษฎี</a></li>
+                <li><a href="#usecases">Use Cases</a></li>
+                <li><a href="#casestudies">Case Studies</a></li>
+                <li><a href="#workshop">Workshop</a></li>
+                <li><a href="#comparison">เปรียบเทียบ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="section section-hero">
+        <div class="hero-badge">
+            🎓 Professional Development Workshop
+        </div>
+        <h1 class="hero-title">
+            การใช้ <span>AI Coding</span><br>ในงาน Software Engineering
+        </h1>
+        <p class="hero-subtitle">
+            เรียนรู้การใช้เครื่องมือ AI Coding อย่าง GitHub Copilot, Amazon CodeWhisperer และอื่นๆ 
+            เพื่อเพิ่มประสิทธิภาพในการพัฒนาซอฟต์แวร์ ด้วย Generative AI และ Large Language Models
+        </p>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent-blue);">📚</div>
+                <div class="stat-value" style="color: var(--accent-blue);">5</div>
+                <div class="stat-label">หัวข้อหลัก</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--accent-green);">⚡</div>
+                <div class="stat-value" style="color: var(--accent-green);">55%</div>
+                <div class="stat-label">เพิ่มความเร็ว</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-purple);">🛠️</div>
+                <div class="stat-value" style="color: var(--accent-purple);">4+</div>
+                <div class="stat-label">เครื่องมือ AI</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--accent-orange);">🎯</div>
+                <div class="stat-value" style="color: var(--accent-orange);">Hands-on</div>
+                <div class="stat-label">Workshop</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Theory Section -->
+    <section class="section" id="theory">
+        <div class="section-header">
+            <div class="section-badge">📖 Section 1</div>
+            <h2 class="section-title">ทฤษฎีเบื้องหลัง AI Coding Tools</h2>
+            <p class="section-subtitle">ทำความเข้าใจหลักการทำงานของ Generative AI และ Large Language Models ที่ขับเคลื่อนเครื่องมือ AI Coding</p>
+        </div>
+
+        <!-- LLM Flow Diagram -->
+        <div class="theory-visual" style="margin-bottom: 3rem;">
+            <h3 style="text-align: center; margin-bottom: 2rem; font-size: 1.25rem;">🔄 การทำงานของ LLM ในการสร้างโค้ด</h3>
+            <div class="flow-diagram">
+                <div class="flow-item">
+                    <div class="flow-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent-blue);">👤</div>
+                    <div class="flow-label">Developer<br>Input</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">
+                    <div class="flow-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-purple);">💬</div>
+                    <div class="flow-label">Prompt /<br>Comment</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">
+                    <div class="flow-icon" style="background: rgba(236, 72, 153, 0.1); color: var(--accent-pink);">🧠</div>
+                    <div class="flow-label">LLM<br>(GPT-4, Codex)</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">
+                    <div class="flow-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--accent-green);">📝</div>
+                    <div class="flow-label">Generated<br>Code</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">
+                    <div class="flow-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--accent-orange);">✅</div>
+                    <div class="flow-label">Review &<br>Test</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Card 1: Generative AI -->
+            <div class="card">
+                <div class="card-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent-blue);">🧠</div>
+                <h3 class="card-title">1.1 Generative AI กับการสร้างโค้ด</h3>
+                <p class="card-description">
+                    แกนหลักของเครื่องมือ AI coding คือ <strong>Large Language Model (LLM)</strong> เช่น OpenAI Codex (พื้นฐานของ Copilot) 
+                    หรือ GPT-4 ซึ่งถูกฝึกบนข้อมูลซอร์สโค้ดขนาดใหญ่ โมเดลจะเรียนรู้รูปแบบและไวยากรณ์ของหลายภาษาโปรแกรม
+                </p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <div class="code-dot code-dot-red"></div>
+                            <div class="code-dot code-dot-yellow"></div>
+                            <div class="code-dot code-dot-green"></div>
+                        </div>
+                        <div class="code-filename">example.py</div>
+                    </div>
+                    <div class="code-body">
+<pre><span class="code-comment"># ตัวอย่าง: ผู้ใช้พิมพ์คำบรรยาย</span>
+<span class="code-comment"># "สร้างฟังก์ชันคำนวณ factorial"</span>
+
+<span class="code-keyword">def</span> <span class="code-function">factorial</span>(n: <span class="code-type">int</span>) -> <span class="code-type">int</span>:
+    <span class="code-string">"""Calculate factorial of n."""</span>
+    <span class="code-keyword">if</span> n <= <span class="code-variable">1</span>:
+        <span class="code-keyword">return</span> <span class="code-variable">1</span>
+    <span class="code-keyword">return</span> n * factorial(n - <span class="code-variable">1</span>)</pre>
+                    </div>
+                </div>
+                <div class="alert-box alert-warning">
+                    <div class="alert-icon">⚠️</div>
+                    <div class="alert-content">
+                        โค้ดที่โมเดลสร้างยังไม่สมบูรณ์แบบ 100% – บางครั้งอาจมีข้อผิดพลาดหรือช่องโหว่ 
+                        ดังนั้นนักพัฒนาจึงควรทบทวนและทดสอบโค้ดที่ได้ทุกครั้ง
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Prompt Engineering -->
+            <div class="card">
+                <div class="card-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-purple);">✨</div>
+                <h3 class="card-title">1.2 Prompt Engineering</h3>
+                <p class="card-description">
+                    การออกแบบคำสั่งหรือคำถามที่สื่อสารกับ AI อย่างมีประสิทธิภาพ เพื่อให้ได้โค้ดตามที่ต้องการ
+                </p>
+                
+                <div style="margin: 1.5rem 0;">
+                    <h4 style="font-size: 1rem; margin-bottom: 1rem; color: var(--accent-purple);">📌 แนวทางการเขียน Prompt</h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: rgba(139, 92, 246, 0.05); border-radius: 8px;">
+                            <span style="font-size: 1.25rem;">🎭</span>
+                            <span><strong>Role</strong> – ระบุบทบาทของ AI</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: rgba(139, 92, 246, 0.05); border-radius: 8px;">
+                            <span style="font-size: 1.25rem;">🎯</span>
+                            <span><strong>Goal</strong> – ระบุเป้าหมายที่ต้องการ</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: rgba(139, 92, 246, 0.05); border-radius: 8px;">
+                            <span style="font-size: 1.25rem;">📋</span>
+                            <span><strong>Constraints</strong> – ระบุข้อจำกัด/เงื่อนไข</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="prompt-box">
+                    <div class="prompt-header">
+                        <div class="prompt-icon">💡</div>
+                        <div class="prompt-label">ตัวอย่าง Prompt</div>
+                    </div>
+                    <div class="prompt-content"><strong>Role:</strong> คุณเป็นนักพัฒนา Python รุ่นพี่ที่เชี่ยวชาญด้านความปลอดภัย
+
+<strong>Goal:</strong> เขียนฟังก์ชันจัดการ refund ให้ REST API
+
+<strong>Constraints:</strong> ห้ามใช้ไลบรารีภายนอก, ต้องเขียน unit test ด้วย, ยึดตามสไตล์โค้ด PEP8</div>
+                </div>
+            </div>
+
+            <!-- Card 3: Advanced Techniques -->
+            <div class="card">
+                <div class="card-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--accent-green);">🚀</div>
+                <h3 class="card-title">เทคนิคขั้นสูง</h3>
+                <p class="card-description">
+                    เทคนิคการเขียน prompt ขั้นสูงเพื่อได้ผลลัพธ์ที่ดีขึ้น
+                </p>
+                
+                <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                    <div style="padding: 1rem; background: var(--bg-surface); border-radius: 12px; border-left: 3px solid var(--accent-green);">
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">🎯 Few-shot Prompting</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">ให้ตัวอย่างรูปแบบ input-output เพื่อให้ AI เข้าใจรูปแบบที่ต้องการ</div>
+                    </div>
+                    <div style="padding: 1rem; background: var(--bg-surface); border-radius: 12px; border-left: 3px solid var(--accent-cyan);">
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">🔗 Chain-of-Thought</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">ขอให้โมเดลอธิบายเหตุผลทีละขั้นตอน</div>
+                    </div>
+                    <div style="padding: 1rem; background: var(--bg-surface); border-radius: 12px; border-left: 3px solid var(--accent-purple);">
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">✅ Self-check / Self-evaluate</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">สั่งให้โมเดลตรวจสอบคำตอบตัวเองก่อนส่งกลับ</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Code Understanding -->
+            <div class="card">
+                <div class="card-icon" style="background: rgba(236, 72, 153, 0.1); color: var(--accent-pink);">🔍</div>
+                <h3 class="card-title">1.3 Code Understanding & Analysis</h3>
+                <p class="card-description">
+                    LLM สามารถเข้าใจบริบทและ "ความหมาย" ของโค้ดได้ดีกว่า static analysis แบบเดิม
+                </p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;">
+                    <div style="text-align: center; padding: 1.5rem; background: rgba(239, 68, 68, 0.1); border-radius: 12px;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">❌</div>
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Static Analysis เดิม</div>
+                        <div style="color: var(--text-secondary); font-size: 0.8rem;">Rule ตายตัว, False positives สูง</div>
+                    </div>
+                    <div style="text-align: center; padding: 1.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 12px;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">✅</div>
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">LLM Analysis</div>
+                        <div style="color: var(--text-secondary); font-size: 0.8rem;">เข้าใจบริบท, แนะนำ refactor</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 1.5rem;">
+                    <div style="font-weight: 600; margin-bottom: 0.75rem;">💪 ความสามารถของ LLM:</div>
+                    <ul style="color: var(--text-secondary); padding-left: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <li>จับ bug เชิงตรรกะที่ไม่ผิด syntax</li>
+                        <li>ชี้ code smell และเสนอแนวทาง refactor</li>
+                        <li>วิเคราะห์ช่องโหว่ด้านความปลอดภัย</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section class="section" id="usecases">
+        <div class="section-header">
+            <div class="section-badge">💼 Section 2</div>
+            <h2 class="section-title">Use Cases ในงาน Software Engineering</h2>
+            <p class="section-subtitle">การนำ AI Coding Tools มาใช้ในกระบวนการพัฒนาซอฟต์แวร์จริง</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <!-- Use Case 1 -->
+            <div class="usecase-card">
+                <div class="usecase-number">1</div>
+                <div class="usecase-content">
+                    <h3>🔨 Code Generation จาก Requirement</h3>
+                    <p>ผู้พัฒนาสามารถป้อนคำอธิบายเป็นภาษามนุษย์หรือใส่ comment ไว้ในโค้ด แล้วให้ AI แปลงความต้องการเป็นโค้ดโดยอัตโนมัติ</p>
+                    <div class="usecase-tags">
+                        <span class="usecase-tag">ลด Boilerplate</span>
+                        <span class="usecase-tag">ลด Context Switching</span>
+                        <span class="usecase-tag">เพิ่ม Flow</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Use Case 2 -->
+            <div class="usecase-card">
+                <div class="usecase-number">2</div>
+                <div class="usecase-content">
+                    <h3>🐛 Bug Detection & Fixing</h3>
+                    <p>AI ช่วยค้นหาและเสนอ patch แก้ไข bug ได้ ทั้งแบบที่เราชี้จุดให้ หรือให้ AI วิเคราะห์โค้ดทั้ง repo (ในโหมด agent)</p>
+                    <div class="usecase-tags">
+                        <span class="usecase-tag">Null Handling</span>
+                        <span class="usecase-tag">Edge Cases</span>
+                        <span class="usecase-tag">SQL Injection Scan</span>
+                        <span class="usecase-tag">Hard-coded Secrets</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Use Case 3 -->
+            <div class="usecase-card">
+                <div class="usecase-number">3</div>
+                <div class="usecase-content">
+                    <h3>♻️ Refactoring เพื่อเพิ่ม Maintainability</h3>
+                    <p>AI ช่วยงาน refactor ตั้งแต่เล็กไปใหญ่ ย่อโค้ดให้กระชับ รวมโค้ดซ้ำ ปรับ naming/structure ตาม SOLID/clean code</p>
+                    <div class="usecase-tags">
+                        <span class="usecase-tag">Deduplicate</span>
+                        <span class="usecase-tag">SOLID Principles</span>
+                        <span class="usecase-tag">Clean Code</span>
+                        <span class="usecase-tag">Reduce Complexity</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Use Case 4 -->
+            <div class="usecase-card">
+                <div class="usecase-number">4</div>
+                <div class="usecase-content">
+                    <h3>🧪 การเขียน Unit Test / Integration Test</h3>
+                    <p>AI สร้างชุดทดสอบได้จากโค้ดหรือคำอธิบาย เพิ่ม coverage ได้รวดเร็ว และช่วยจับ regression</p>
+                    <div class="usecase-tags">
+                        <span class="usecase-tag">Auto Generate Tests</span>
+                        <span class="usecase-tag">Increase Coverage</span>
+                        <span class="usecase-tag">Regression Testing</span>
+                    </div>
+                    <div class="alert-box alert-warning" style="margin-top: 1rem; margin-bottom: 0;">
+                        <div class="alert-icon">⚠️</div>
+                        <div class="alert-content">ต้องตรวจ expected output ให้ตรงกับ business logic จริงเสมอ</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Use Case 5 -->
+            <div class="usecase-card">
+                <div class="usecase-number">5</div>
+                <div class="usecase-content">
+                    <h3>📄 เอกสารประกอบโค้ด (Docstrings / README)</h3>
+                    <p>AI ช่วยเขียน docstring, comment, และ README ได้รวดเร็ว และช่วยตรวจความสอดคล้องระหว่าง doc กับโค้ด</p>
+                    <div class="usecase-tags">
+                        <span class="usecase-tag">Docstrings</span>
+                        <span class="usecase-tag">README</span>
+                        <span class="usecase-tag">API Documentation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Studies Section -->
+    <section class="section" id="casestudies">
+        <div class="section-header">
+            <div class="section-badge">📊 Section 3</div>
+            <h2 class="section-title">Case Studies: การนำ AI Coding มาใช้จริง</h2>
+            <p class="section-subtitle">ตัวอย่างจากองค์กรชั้นนำที่ประสบความสำเร็จในการใช้ AI Coding Tools</p>
+        </div>
+
+        <div class="case-study-grid">
+            <!-- Microsoft/GitHub -->
+            <div class="case-study-card">
+                <div class="case-study-logo" style="background: linear-gradient(135deg, #24292e 0%, #1a1e22 100%); color: white;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                </div>
+                <div class="case-study-name">Microsoft / GitHub</div>
+                <div class="case-study-tool">GitHub Copilot</div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                    รายงานการทดลอง: ผู้ใช้ทำงานเสร็จเร็วขึ้น และโค้ดจำนวนมากถูกเขียนโดย AI
+                </p>
+                <div class="case-study-stats">
+                    <div class="case-study-stat">
+                        <div class="case-study-stat-icon">⚡</div>
+                        <div class="case-study-stat-text">เร็วขึ้น <strong>~55%</strong></div>
+                    </div>
+                    <div class="case-study-stat">
+                        <div class="case-study-stat-icon">📝</div>
+                        <div class="case-study-stat-text">โค้ดจาก AI <strong>~46%</strong></div>
+                    </div>
+                    <div class="case-study-stat">
+                        <div class="case-study-stat-icon">😊</div>
+                        <div class="case-study-stat-text">Developer happiness เพิ่มขึ้น</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shopify -->
+            <div class="case-study-card">
+                <div class="case-study-logo" style="background: linear-gradient(135deg, #96bf48 0%, #7ab55c 100%); color: white;">
+                    🛒
+                </div>
+                <div class="case-study-name">Shopify</div>
+                <div class="case-study-tool">GitHub Copilot</div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                    เริ่มทดลองตั้งแต่ preview และขยายจน dev ส่วนใหญ่ใช้งาน
+                </p>
+                <div class="case-study-stats">
+                    <div class="case-study-stat">
+                        <div class="case-study-stat-icon">⏱️</div>
+                        <div class="case-study-stat-text">เวลาต่อ commit ลด <strong>~15%</strong></div>
+                    </div>
+                    <div class="case-study-stat">
+                        <div class="case-study-stat-icon">🐛</div>
+                        <div class="case-study-stat-text">Error เล็กน้อยลดลง</div>
+                    </div>
+                    <div class="case-study-stat">
+                        <div class="case-study-stat-icon">🚀</div>
+                        <div class="case-study-stat-text">ส่งงานไวขึ้น</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Amazon -->
+            <div class="case-study-card">
+                <div class="case-study-logo" style="background: linear-gradient(135deg, #ff9900 0%, #ff6600 100%); color: white;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M.045 18.02c.072-.116.187-.124.348-.022 3.636 2.11 7.594 3.166 11.87 3.166 2.852 0 5.668-.533 8.447-1.595l.315-.14c.138-.06.234-.1.293-.13.226-.088.39-.046.525.13.12.174.09.336-.12.48-.256.19-.6.41-1.006.654-1.244.743-2.64 1.316-4.185 1.726a17.617 17.617 0 01-10.951-.574 17.88 17.88 0 01-5.43-3.35c-.1-.074-.15-.15-.106-.345zm6.664-3.46c0-.6.186-1.106.553-1.518.37-.41.86-.667 1.463-.77.054-.007.09-.01.124-.01l.15.01c.38.026.7.14.96.344.26.2.454.48.58.83.1.283.156.6.156.95 0 .506-.132.95-.398 1.33-.266.38-.63.65-1.09.81-.23.08-.48.12-.75.12-.36 0-.69-.08-1-.24-.31-.16-.55-.38-.72-.67-.17-.29-.26-.6-.03-.93z"/>
+                    </svg>
+                </div>
+                <div class="case-study-name">Amazon</div>
+                <div class="case-study-tool">CodeWhisperer</div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                    เด่นในการช่วยเขียนโค้ดที่เกี่ยวกับ AWS SDK และมี security scan
+                </p>
+                <div class="case-study-stats">
+                    <div class="case-study-stat">
+                        <div class="case-study-stat-icon">☁️</div>
+                        <div class="case-study-stat-text">AWS SDK integration</div>
+                    </div>
+                    <div class="case-study-stat">
+                        <div class="case-study-stat-icon">🔒</div>
+                        <div class="case-study-stat-text">Security scan ในตัว</div>
+                    </div>
+                    <div class="case-study-stat">
+                        <div class="case-study-stat-icon">💰</div>
+                        <div class="case-study-stat-text">ฟรีสำหรับบุคคล</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workshop Section -->
+    <section class="section" id="workshop">
+        <div class="workshop-container">
+            <div class="section-header" style="margin-bottom: 2rem;">
+                <div class="section-badge">🛠️ Section 4</div>
+                <h2 class="section-title">Workshop เชิงลึก (Advanced)</h2>
+                <p class="section-subtitle">
+                    <strong>"Refactoring legacy Python code with GitHub Copilot + GPT-based assistants"</strong>
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+                <div style="background: var(--bg-card); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border-color);">
+                    <h4 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.25rem;">📋</span> บริบท
+                    </h4>
+                    <p style="color: var(--text-secondary);">
+                        มีไฟล์ Python legacy ที่เป็น script ยาว อ่านยาก ซ้ำซ้อน และ error handling ไม่ดี
+                    </p>
+                </div>
+                <div style="background: var(--bg-card); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border-color);">
+                    <h4 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.25rem;">🎯</span> เป้าหมาย
+                    </h4>
+                    <p style="color: var(--text-secondary);">
+                        Refactor ให้ maintainable ขึ้นโดยไม่เปลี่ยน behavior และยืนยันด้วย tests
+                    </p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; justify-content: center;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: var(--bg-card); border-radius: 100px; border: 1px solid var(--border-color);">
+                    <span style="font-size: 1.25rem;">🤖</span>
+                    <span>GitHub Copilot (VS Code)</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: var(--bg-card); border-radius: 100px; border: 1px solid var(--border-color);">
+                    <span style="font-size: 1.25rem;">💬</span>
+                    <span>GPT-4 / Copilot Chat</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: var(--bg-card); border-radius: 100px; border: 1px solid var(--border-color);">
+                    <span style="font-size: 1.25rem;">🧪</span>
+                    <span>Unit Tests</span>
+                </div>
+            </div>
+
+            <div class="workshop-steps">
+                <!-- Step 1 -->
+                <div class="workshop-step">
+                    <div class="step-indicator">
+                        <div class="step-number">1</div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step-content">
+                        <h4 class="step-title">
+                            <span>🔍</span> เข้าใจโค้ดเดิม
+                        </h4>
+                        <p class="step-description">ใช้ AI ช่วยอธิบายโค้ดและหาจุดที่ต้องปรับปรุง</p>
+                        <div class="prompt-box">
+                            <div class="prompt-header">
+                                <div class="prompt-icon">💡</div>
+                                <div class="prompt-label">Copilot Chat Prompt</div>
+                            </div>
+                            <div class="prompt-content">/explain โค้ดฟังก์ชันนี้ทำอะไรบ้าง และมีส่วนไหนที่น่าจะต้องปรับปรุง?</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="workshop-step">
+                    <div class="step-indicator">
+                        <div class="step-number">2</div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step-content">
+                        <h4 class="step-title">
+                            <span>📝</span> วางแผน Refactor (ภาพใหญ่)
+                        </h4>
+                        <p class="step-description">ขอให้ AI ช่วยวางแผนการ refactor ตาม SRP/Clean Code</p>
+                        <div class="prompt-box">
+                            <div class="prompt-header">
+                                <div class="prompt-icon">💡</div>
+                                <div class="prompt-label">GPT-4 Prompt</div>
+                            </div>
+                            <div class="prompt-content">I have a function generateReport(data) that mixes data processing and file writing.
+Refactor it to follow SRP/Clean Code. Provide a step-by-step plan and a target structure.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="workshop-step">
+                    <div class="step-indicator">
+                        <div class="step-number">3</div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step-content">
+                        <h4 class="step-title">
+                            <span>♻️</span> Refactor แบบ Incremental
+                        </h4>
+                        <p class="step-description">ทำทีละขั้น รันเทสต์ทุกก้าวเพื่อกัน regression</p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin: 1rem 0;">
+                            <div style="padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px; font-size: 0.9rem;">
+                                ✅ แยก <code>processData(data)</code>
+                            </div>
+                            <div style="padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px; font-size: 0.9rem;">
+                                ✅ แยก <code>writeReportToFile()</code>
+                            </div>
+                            <div style="padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px; font-size: 0.9rem;">
+                                ✅ ลด global state
+                            </div>
+                            <div style="padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px; font-size: 0.9rem;">
+                                ✅ เพิ่ม error handling
+                            </div>
+                        </div>
+
+                        <div class="prompt-box">
+                            <div class="prompt-header">
+                                <div class="prompt-icon">💡</div>
+                                <div class="prompt-label">Copilot Chat Prompt</div>
+                            </div>
+                            <div class="prompt-content">Split this function into smaller functions with clear responsibilities.
+Keep behavior identical. Update callers accordingly.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="workshop-step">
+                    <div class="step-indicator">
+                        <div class="step-number">4</div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step-content">
+                        <h4 class="step-title">
+                            <span>🔎</span> Review คุณภาพโค้ดใหม่
+                        </h4>
+                        <p class="step-description">ให้ AI ช่วยตรวจสอบ code smells, security issues</p>
+                        <div class="prompt-box">
+                            <div class="prompt-header">
+                                <div class="prompt-icon">💡</div>
+                                <div class="prompt-label">Review Prompt</div>
+                            </div>
+                            <div class="prompt-content">Review this refactor for code smells, security issues, and maintainability.
+Suggest improvements, but keep changes minimal.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="workshop-step">
+                    <div class="step-indicator">
+                        <div class="step-number">5</div>
+                    </div>
+                    <div class="step-content">
+                        <h4 class="step-title">
+                            <span>✅</span> Validate
+                        </h4>
+                        <p class="step-description">รัน tests และทำ code review ตามปกติ</p>
+                        
+                        <div class="code-block">
+                            <div class="code-header">
+                                <div class="code-dots">
+                                    <div class="code-dot code-dot-red"></div>
+                                    <div class="code-dot code-dot-yellow"></div>
+                                    <div class="code-dot code-dot-green"></div>
+                                </div>
+                                <div class="code-filename">terminal</div>
+                            </div>
+                            <div class="code-body">
+<pre><span class="code-comment"># รัน unit tests</span>
+$ pytest tests/ -v
+
+<span class="code-comment"># สร้าง diff/PR</span>
+$ git diff main --stat
+$ git push origin feature/refactor-report</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Metrics -->
+            <div style="margin-top: 3rem; background: var(--bg-card); border-radius: 20px; padding: 2rem; border: 1px solid var(--border-color);">
+                <h4 style="margin-bottom: 1.5rem; text-align: center; font-size: 1.25rem;">🏆 ตัวชี้วัดความสำเร็จ</h4>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                    <div style="text-align: center; padding: 1.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 16px;">
+                        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">✅</div>
+                        <div style="font-weight: 600; margin-bottom: 0.25rem;">Test Suite</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">ผ่าน 100%</div>
+                    </div>
+                    <div style="text-align: center; padding: 1.5rem; background: rgba(59, 130, 246, 0.1); border-radius: 16px;">
+                        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📖</div>
+                        <div style="font-weight: 600; margin-bottom: 0.25rem;">Code Quality</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">อ่านง่าย, ไม่ซ้ำซ้อน</div>
+                    </div>
+                    <div style="text-align: center; padding: 1.5rem; background: rgba(139, 92, 246, 0.1); border-radius: 16px;">
+                        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👥</div>
+                        <div style="font-weight: 600; margin-bottom: 0.25rem;">Team Impact</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">PR review time ลดลง</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section class="section" id="comparison">
+        <div class="section-header">
+            <div class="section-badge">⚖️ Section 5</div>
+            <h2 class="section-title">ตารางเปรียบเทียบเครื่องมือ AI Coding</h2>
+            <p class="section-subtitle">เลือกเครื่องมือที่เหมาะกับความต้องการของคุณ</p>
+        </div>
+
+        <div class="table-container">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>เครื่องมือ</th>
+                        <th>ราคา</th>
+                        <th>การประมวลผล</th>
+                        <th>รองรับ IDE/ภาษา</th>
+                        <th>จุดเด่น</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="tool-cell">
+                                <div class="tool-icon" style="background: #24292e; color: white;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                    </svg>
+                                </div>
+                                <div class="tool-name">GitHub Copilot</div>
+                            </div>
+                        </td>
+                        <td><strong>~$10/เดือน</strong></td>
+                        <td>Cloud</td>
+                        <td>IDE หลัก + หลายภาษา</td>
+                        <td>
+                            <span class="feature-badge">เก่งรอบด้าน</span>
+                            <span class="feature-badge">ชุมชนใหญ่</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="tool-cell">
+                                <div class="tool-icon" style="background: linear-gradient(135deg, #ff9900, #ff6600); color: white;">☁️</div>
+                                <div class="tool-name">Amazon CodeWhisperer</div>
+                            </div>
+                        </td>
+                        <td><strong>ฟรี</strong> (บุคคล)</td>
+                        <td>Cloud (AWS)</td>
+                        <td>VS Code/JetBrains/Cloud9</td>
+                        <td>
+                            <span class="feature-badge">AWS SDK</span>
+                            <span class="feature-badge">Security Scan</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="tool-cell">
+                                <div class="tool-icon" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white;">⚡</div>
+                                <div class="tool-name">Tabnine</div>
+                            </div>
+                        </td>
+                        <td>Free + Pro <strong>~$12/เดือน</strong></td>
+                        <td>Local/Cloud</td>
+                        <td>IDE หลายตัว</td>
+                        <td>
+                            <span class="feature-badge">Privacy</span>
+                            <span class="feature-badge">On-prem Option</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="tool-cell">
+                                <div class="tool-icon" style="background: linear-gradient(135deg, #10b981, #00d4ff); color: white;">✨</div>
+                                <div class="tool-name">Codeium</div>
+                            </div>
+                        </td>
+                        <td><strong>ฟรี</strong> (บุคคล+ทีม)</td>
+                        <td>Cloud (no retention)</td>
+                        <td>IDE หลัก + หลายภาษา</td>
+                        <td>
+                            <span class="feature-badge">คุ้มค่า</span>
+                            <span class="feature-badge">ติดตั้งง่าย</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- References -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-badge">📚 References</div>
+            <h2 class="section-title">แหล่งอ้างอิง</h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+            <div style="padding: 1rem; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
+                <div style="font-weight: 600; margin-bottom: 0.5rem;">IBM</div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">"What is AI code-generation software?"</div>
+            </div>
+            <div style="padding: 1rem; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
+                <div style="font-weight: 600; margin-bottom: 0.5rem;">AugmentCode</div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">"Master Prompt Engineering Techniques for AI Coding"</div>
+            </div>
+            <div style="padding: 1rem; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
+                <div style="font-weight: 600; margin-bottom: 0.5rem;">Armur.ai</div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">"Using LLMs in Code Security and Static Analysis"</div>
+            </div>
+            <div style="padding: 1rem; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
+                <div style="font-weight: 600; margin-bottom: 0.5rem;">GitHub Resources</div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">"Measuring the impact of GitHub Copilot"</div>
+            </div>
+            <div style="padding: 1rem; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
+                <div style="font-weight: 600; margin-bottom: 0.5rem;">VentureBeat</div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">"GitHub Copilot expands…"</div>
+            </div>
+            <div style="padding: 1rem; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
+                <div style="font-weight: 600; margin-bottom: 0.5rem;">DigitalDefynd</div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">"Top 5 Copilot AI Business Case Studies [2025]"</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-logo">🤖 AI Coding Workshop</div>
+        <p class="footer-text">การใช้ AI Coding ในงาน Software Engineering</p>
+        <p class="footer-text" style="margin-top: 0.5rem; font-size: 0.875rem;">Built with ❤️ for Thai Developers</p>
+    </footer>
+
+    <script>
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Add scroll animation for cards
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card, .usecase-card, .case-study-card, .step-content').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

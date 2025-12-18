@@ -1,0 +1,27 @@
+# Order Service - Docker Compose
+# Lab 4 Complete: Local development setup
+
+version: "3.9"
+
+services:
+  order-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=sqlite+aiosqlite:///./data/orders.db
+    volumes:
+      - ./app:/app/app:ro  # Hot reload in dev
+      - order-data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  order-data:

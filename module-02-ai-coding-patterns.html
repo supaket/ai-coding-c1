@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 2: AI Coding Patterns in Practice</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f0f23; color: #e0e0e0; line-height: 1.7; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+    .nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 32px; }
+    .nav a { color: #00d4ff; text-decoration: none; font-size: 14px; }
+    .nav .module-indicator { background: rgba(0,212,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 13px; color: #00d4ff; }
+    .module-header { margin-bottom: 40px; }
+    .module-header .badge { display: inline-block; background: linear-gradient(135deg, #00d4ff, #0099ff); color: #000; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 12px; }
+    .module-header h1 { font-size: 36px; color: #fff; margin-bottom: 12px; }
+    .module-header .subtitle { font-size: 18px; color: #a0a0a0; }
+    .meta-bar { display: flex; gap: 24px; margin: 24px 0; flex-wrap: wrap; }
+    .meta-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #888; }
+    .objectives { background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,255,136,0.02)); border: 1px solid rgba(0,255,136,0.3); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
+    .objectives h3 { color: #00ff88; margin-bottom: 16px; font-size: 16px; }
+    .objectives ul { list-style: none; padding: 0; }
+    .objectives li { padding: 8px 0; padding-left: 24px; position: relative; color: #c0c0c0; }
+    .objectives li::before { content: "✓"; position: absolute; left: 0; color: #00ff88; }
+    .section { margin-bottom: 48px; }
+    .section h2 { font-size: 24px; color: #fff; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #00d4ff; }
+    .section h3 { font-size: 18px; color: #00d4ff; margin: 24px 0 12px; }
+    .section p { color: #b0b0b0; margin-bottom: 16px; }
+    .ai-prompt { background: linear-gradient(135deg, rgba(138,43,226,0.1), rgba(138,43,226,0.02)); border: 1px solid rgba(138,43,226,0.4); border-radius: 12px; padding: 20px; margin: 20px 0; }
+    .ai-prompt-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; color: #bb86fc; font-weight: 600; }
+    .ai-prompt-content { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px; font-family: 'Consolas', monospace; font-size: 13px; color: #e0e0e0; line-height: 1.6; white-space: pre-wrap; }
+    .code-block { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 8px; margin: 16px 0; overflow: hidden; }
+    .code-header { background: #252540; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2a4a; }
+    .code-filename { font-size: 13px; color: #00d4ff; font-family: 'Consolas', monospace; }
+    .code-lang { font-size: 11px; color: #888; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; }
+    .code-content { padding: 16px; overflow-x: auto; }
+    .code-content pre { margin: 0; font-family: 'Consolas', monospace; font-size: 13px; line-height: 1.5; color: #e0e0e0; }
+    .pattern-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .pattern-card h4 { color: #00d4ff; font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+    .pattern-card p { color: #a0a0a0; font-size: 14px; margin-bottom: 16px; }
+    .info-box { border-radius: 8px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 12px; }
+    .info-box.tip { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); }
+    .info-box.warning { background: rgba(255,193,7,0.1); border: 1px solid rgba(255,193,7,0.3); }
+    .info-box .icon { font-size: 20px; flex-shrink: 0; }
+    .info-box .content { font-size: 14px; color: #c0c0c0; }
+    .info-box .content strong { color: #fff; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    th { background: rgba(255,255,255,0.05); color: #00d4ff; font-size: 13px; }
+    td { color: #c0c0c0; font-size: 14px; }
+    .checkpoint { background: linear-gradient(135deg, #1a1a3e, #252550); border: 2px solid #00d4ff; border-radius: 12px; padding: 24px; margin: 32px 0; text-align: center; }
+    .checkpoint h4 { color: #00d4ff; margin-bottom: 12px; }
+    .checkpoint ul { list-style: none; padding: 0; text-align: left; max-width: 500px; margin: 0 auto; }
+    .checkpoint li { padding: 8px 0; color: #c0c0c0; display: flex; align-items: center; gap: 10px; }
+    .nav-footer { display: flex; justify-content: space-between; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .nav-btn { display: flex; align-items: center; gap: 8px; padding: 12px 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; text-decoration: none; font-size: 14px; }
+    .nav-btn:hover { background: rgba(0,212,255,0.1); border-color: #00d4ff; }
+    .nav-btn.primary { background: linear-gradient(135deg, #00d4ff, #0099ff); color: #000; border: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a href="module-01-understanding-workspace-ai.html">← Module 1</a>
+      <span class="module-indicator">Module 2 of 5</span>
+      <a href="module-03-devops-testing-quality.html">Module 3 →</a>
+    </nav>
+
+    <header class="module-header">
+      <span class="badge">Module 2</span>
+      <h1>AI Coding Patterns in Practice</h1>
+      <p class="subtitle">Learn practical patterns for using AI to understand, generate, refactor, and review code.</p>
+    </header>
+
+    <div class="meta-bar">
+      <div class="meta-item"><span>⏱️</span><span>60 minutes</span></div>
+      <div class="meta-item"><span>🤖</span><span>8 AI prompts</span></div>
+      <div class="meta-item"><span>🧪</span><span>Hands-on practice</span></div>
+    </div>
+
+    <div class="objectives">
+      <h3>🎯 Learning Objectives</h3>
+      <ul>
+        <li>Use AI to understand existing code and architecture</li>
+        <li>Generate and refactor functions, classes, and modules</li>
+        <li>Conduct AI-assisted code reviews</li>
+        <li>Get technical explanations for complex concepts</li>
+        <li>Build a personal prompt library for common tasks</li>
+      </ul>
+    </div>
+
+    <section class="section">
+      <h2>🔍 Pattern 1: Understanding Existing Code</h2>
+      
+      <p>One of AI's most valuable applications is helping you understand unfamiliar codebases quickly.</p>
+
+      <div class="pattern-card">
+        <h4>📖 Code Explanation Prompt</h4>
+        <p>Use this when you encounter unfamiliar code and need to understand what it does.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Explain Code
+          </div>
+          <div class="ai-prompt-content">Explain this code step by step:
+1. What is its purpose?
+2. How does the data flow through it?
+3. What are the key design decisions?
+4. Are there any potential issues or edge cases?
+
+```python
+[paste your code here]
+```</div>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <h4>🏗️ Architecture Analysis Prompt</h4>
+        <p>Use this to understand the overall structure of a module or system.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Analyze Architecture
+          </div>
+          <div class="ai-prompt-content">Analyze this codebase structure and explain:
+1. What architectural pattern is being used?
+2. How are the components organized?
+3. What are the main dependencies between modules?
+4. Draw a simple diagram showing the relationships.
+
+Files:
+[list your files and their purposes]</div>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <h4>🔗 Dependency Mapping Prompt</h4>
+        <p>Use this to understand how components connect and what might break if you change something.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Map Dependencies
+          </div>
+          <div class="ai-prompt-content">For this function/class, identify:
+1. What does it depend on? (imports, called functions, external services)
+2. What depends on it? (callers, users of this interface)
+3. If I modify this, what else might need to change?
+4. What tests would need to be updated?
+
+```python
+[paste your code here]
+```</div>
+        </div>
+      </div>
+
+      <div class="info-box tip">
+        <span class="icon">💡</span>
+        <div class="content">
+          <strong>Pro Tip:</strong> When pasting code for analysis, include relevant context: imports, configuration, and a brief description of what the system does. More context = better explanations.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>✨ Pattern 2: Generating Code</h2>
+      
+      <p>AI excels at generating boilerplate, implementing common patterns, and scaffolding new components.</p>
+
+      <div class="pattern-card">
+        <h4>🏭 Function Generation Prompt</h4>
+        <p>Use this to generate well-structured functions with proper error handling.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Generate Function
+          </div>
+          <div class="ai-prompt-content">Create a Python function that:
+- Purpose: [describe what it should do]
+- Inputs: [list parameters and their types]
+- Output: [expected return value and type]
+- Error handling: [what errors to handle]
+- Style: Include type hints, docstring, and follow PEP 8
+
+Example usage:
+```python
+result = my_function(param1, param2)
+```</div>
+        </div>
+      </div>
+
+      <h3>Example: Generating a Validation Function</h3>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">Generated: validate_email.py</span>
+          <span class="code-lang">Python</span>
+        </div>
+        <div class="code-content">
+<pre>import re
+from typing import Tuple
+
+
+def validate_email(email: str) -> Tuple[bool, str]:
+    """
+    Validate an email address format.
+    
+    Args:
+        email: The email address to validate.
+        
+    Returns:
+        Tuple of (is_valid, message).
+        
+    Examples:
+        >>> validate_email("<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="651016001725001d04081509004b060a08">[email&#160;protected]</a>")
+        (True, "Valid email address")
+        >>> validate_email("invalid-email")
+        (False, "Invalid email format")
+    """
+    if not email:
+        return False, "Email cannot be empty"
+    
+    if len(email) > 254:
+        return False, "Email too long (max 254 characters)"
+    
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    
+    if re.match(pattern, email):
+        return True, "Valid email address"
+    
+    return False, "Invalid email format"</pre>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <h4>🔧 Class Generation Prompt</h4>
+        <p>Use this to generate well-structured classes with proper methods and properties.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Generate Class
+          </div>
+          <div class="ai-prompt-content">Create a Python class that:
+- Name: [ClassName]
+- Purpose: [what this class represents]
+- Properties: [list attributes]
+- Methods: [list methods with brief descriptions]
+- Inheritance: [parent class if any]
+
+Include:
+- Type hints throughout
+- Docstrings for class and methods
+- Property decorators where appropriate
+- Input validation in __init__</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🔄 Pattern 3: Refactoring Code</h2>
+      
+      <p>AI can help identify refactoring opportunities and implement improvements while maintaining functionality.</p>
+
+      <div class="pattern-card">
+        <h4>♻️ Refactoring Analysis Prompt</h4>
+        <p>Use this to get suggestions for improving existing code.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Suggest Refactoring
+          </div>
+          <div class="ai-prompt-content">Review this code and suggest refactoring improvements:
+
+1. Code smells: What issues do you see?
+2. Design patterns: Would any patterns help?
+3. Readability: How can it be clearer?
+4. Performance: Any obvious optimizations?
+5. Testability: How can it be easier to test?
+
+For each suggestion, explain why and show the improved code.
+
+```python
+[paste your code here]
+```</div>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <h4>🔀 Modern Syntax Conversion Prompt</h4>
+        <p>Use this to update code to use modern Python features.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Modernize Code
+          </div>
+          <div class="ai-prompt-content">Convert this code to use modern Python 3.11+ features:
+- f-strings instead of .format() or %
+- Type hints throughout
+- Dataclasses or Pydantic where appropriate
+- match/case statements where applicable
+- Walrus operator where it improves readability
+- async/await if I/O bound
+
+Keep the same functionality but make it more Pythonic.
+
+```python
+[paste your code here]
+```</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>👀 Pattern 4: AI-Assisted Code Reviews</h2>
+      
+      <p>AI can provide a first-pass review, catching common issues before human review.</p>
+
+      <div class="pattern-card">
+        <h4>🔍 Code Review Prompt</h4>
+        <p>Use this to get a thorough review of code changes.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Review Code
+          </div>
+          <div class="ai-prompt-content">Review this code for:
+
+**Correctness**
+- Logic errors or edge cases
+- Off-by-one errors
+- Null/undefined handling
+
+**Security**
+- Input validation
+- SQL injection risks
+- Hardcoded secrets
+
+**Performance**
+- Inefficient algorithms
+- N+1 query problems
+- Memory leaks
+
+**Style**
+- Naming conventions
+- Code organization
+- Comment quality
+
+**Testing**
+- Testability concerns
+- Missing test cases to consider
+
+Format as a code review with line references where applicable.
+
+```python
+[paste your code here]
+```</div>
+        </div>
+      </div>
+
+      <div class="info-box warning">
+        <span class="icon">⚠️</span>
+        <div class="content">
+          <strong>Important:</strong> AI code review is a supplement, not a replacement for human review. Always have a human reviewer approve code before merging, especially for security-sensitive changes.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>📚 Pattern 5: Technical Explanations</h2>
+      
+      <p>AI is excellent at explaining complex concepts in accessible terms.</p>
+
+      <div class="pattern-card">
+        <h4>🎓 Concept Explanation Prompt</h4>
+        <p>Use this to understand complex technical concepts.</p>
+        
+        <div class="ai-prompt">
+          <div class="ai-prompt-header">
+            <span>🤖</span> AI Prompt: Explain Concept
+          </div>
+          <div class="ai-prompt-content">Explain [concept] for a developer who:
+- Knows: [what they already understand]
+- Wants to learn: [specific aspect they're curious about]
+
+Include:
+1. Simple definition (1-2 sentences)
+2. Analogy to something familiar
+3. Concrete code example
+4. When to use it (and when not to)
+5. Common pitfalls to avoid</div>
+        </div>
+      </div>
+
+      <h3>Example: Explaining Async/Await</h3>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">AI Explanation Example</span>
+          <span class="code-lang">Markdown</span>
+        </div>
+        <div class="code-content">
+<pre><strong>Async/Await in Python</strong>
+
+<strong>Simple definition:</strong> Async/await lets your program do other work 
+while waiting for slow operations (like API calls or database queries) 
+instead of blocking.
+
+<strong>Analogy:</strong> Like a restaurant waiter who takes orders from multiple 
+tables while food is being prepared, rather than standing idle at one 
+table until the food arrives.
+
+<strong>Code example:</strong>
+```python
+import asyncio
+import httpx
+
+async def fetch_user(user_id: int) -> dict:
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"/users/{user_id}")
+        return response.json()
+
+# Fetch 3 users concurrently (not sequentially)
+users = await asyncio.gather(
+    fetch_user(1),
+    fetch_user(2),
+    fetch_user(3)
+)
+```
+
+<strong>When to use:</strong> I/O-bound operations (HTTP, database, file I/O)
+<strong>When NOT to use:</strong> CPU-bound operations (use multiprocessing instead)
+
+<strong>Common pitfall:</strong> Forgetting to await an async function returns a 
+coroutine object, not the result!</pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>📋 Your Prompt Library</h2>
+      
+      <p>Build a personal collection of prompts that work well for your specific needs.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Prompt Name</th>
+            <th>Use Case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Understanding</td>
+            <td>Explain Code</td>
+            <td>When you encounter unfamiliar code</td>
+          </tr>
+          <tr>
+            <td>Understanding</td>
+            <td>Analyze Architecture</td>
+            <td>Understanding system design</td>
+          </tr>
+          <tr>
+            <td>Understanding</td>
+            <td>Map Dependencies</td>
+            <td>Before modifying code</td>
+          </tr>
+          <tr>
+            <td>Generation</td>
+            <td>Generate Function</td>
+            <td>Creating new utility functions</td>
+          </tr>
+          <tr>
+            <td>Generation</td>
+            <td>Generate Class</td>
+            <td>Creating data models or services</td>
+          </tr>
+          <tr>
+            <td>Refactoring</td>
+            <td>Suggest Refactoring</td>
+            <td>Improving existing code</td>
+          </tr>
+          <tr>
+            <td>Refactoring</td>
+            <td>Modernize Code</td>
+            <td>Updating legacy code</td>
+          </tr>
+          <tr>
+            <td>Review</td>
+            <td>Review Code</td>
+            <td>Pre-review before PR</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box tip">
+        <span class="icon">💡</span>
+        <div class="content">
+          <strong>Pro Tip:</strong> Save prompts that work well for you. Over time, customize them to match your team's coding standards and preferences. A good prompt is an asset worth maintaining.
+        </div>
+      </div>
+    </section>
+
+    <div class="checkpoint">
+      <h4>✅ Module 2 Checkpoint</h4>
+      <p>Before moving to Module 3, verify you can:</p>
+      <ul>
+        <li><span style="color: #00ff88;">☐</span> Use AI to explain unfamiliar code</li>
+        <li><span style="color: #00ff88;">☐</span> Generate functions and classes with AI</li>
+        <li><span style="color: #00ff88;">☐</span> Get refactoring suggestions from AI</li>
+        <li><span style="color: #00ff88;">☐</span> Conduct AI-assisted code reviews</li>
+        <li><span style="color: #00ff88;">☐</span> Have at least 3 saved prompts in your library</li>
+      </ul>
+    </div>
+
+    <div class="nav-footer">
+      <a href="module-01-understanding-workspace-ai.html" class="nav-btn">← Module 1</a>
+      <a href="module-03-devop

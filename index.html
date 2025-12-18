@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Coding in the Real World - Workshop Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --bg-card-hover: #22222e;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #6b6b7b;
+            --accent-cyan: #00d4ff;
+            --accent-green: #00ff88;
+            --accent-purple: #a855f7;
+            --accent-orange: #ff8c00;
+            --accent-pink: #ff0080;
+            --border-color: #2a2a3a;
+            --gradient-primary: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%);
+            --gradient-purple: linear-gradient(135deg, #a855f7 0%, #ff0080 100%);
+            --gradient-warm: linear-gradient(135deg, #ff8c00 0%, #ff0080 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 136, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(168, 85, 247, 0.05) 0%, transparent 40%);
+            animation: bgFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes bgFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, 2%) rotate(1deg); }
+            66% { transform: translate(-1%, 1%) rotate(-1deg); }
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1rem 2rem;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .nav-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 100px;
+            font-size: 0.875rem;
+            color: var(--accent-cyan);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-badge::before {
+            content: '🚀';
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 3rem 0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-cyan);
+        }
+
+        /* Modules Section */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        /* Module Cards */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .module-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .module-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .module-card:hover::before {
+            opacity: 1;
+        }
+
+        .module-card.featured {
+            grid-column: span 2;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(255, 0, 128, 0.1) 100%);
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        .module-card.featured::before {
+            background: var(--gradient-purple);
+        }
+
+        .module-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .module-number {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #000;
+        }
+
+        .module-card.featured .module-number {
+            background: var(--gradient-purple);
+            color: #fff;
+        }
+
+        .module-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .module-duration {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .module-badge {
+            padding: 0.25rem 0.75rem;
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--accent-purple);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .module-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .module-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .module-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .topic-tag {
+            padding: 0.375rem 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Labs Section */
+        .labs-container {
+            background: var(--bg-secondary);
+            border-radius: 24px;
+            padding: 3rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .labs-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .labs-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .labs-subtitle {
+            color: var(--text-secondary);
+        }
+
+        .labs-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 1024px) {
+            .labs-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .labs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .lab-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .lab-card:hover {
+            border-color: var(--accent-green);
+            transform: translateY(-2px);
+        }
+
+        .lab-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent-green);
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .lab-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .lab-duration {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .lab-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.375rem;
+        }
+
+        .tech-badge {
+            padding: 0.25rem 0.5rem;
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent-cyan);
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Code Preview */
+        .code-preview {
+            background: var(--bg-secondary);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .code-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .code-tab {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .code-tab.active {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent-cyan);
+        }
+
+        .code-tab:hover:not(.active) {
+            color: var(--text-secondary);
+        }
+
+        .code-body {
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.8;
+            overflow-x: auto;
+        }
+
+        .code-body pre {
+            margin: 0;
+        }
+
+        .code-comment { color: #6b7280; }
+        .code-keyword { color: #c084fc; }
+        .code-string { color: #4ade80; }
+        .code-function { color: #60a5fa; }
+        .code-class { color: #fbbf24; }
+        .code-decorator { color: #f472b6; }
+
+        /* Download Section */
+        .download-section {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 255, 136, 0.1) 100%);
+            border-radius: 24px;
+            padding: 4rem;
+            text-align: center;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .download-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .download-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .download-description {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .download-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .download-stat {
+            text-align: center;
+        }
+
+        .download-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .download-stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-stats {
+                gap: 1.5rem;
+            }
+
+            .module-card.featured {
+                grid-column: span 1;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .labs-container {
+                padding: 1.5rem;
+            }
+
+            .download-section {
+                padding: 2rem;
+            }
+
+            .download-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <div class="nav-logo">
+                <div class="nav-logo-icon">🤖</div>
+                <span>AI Coding Workshop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#modules">Modules</a></li>
+                <li><a href="#labs">Labs</a></li>
+                <li><a href="#code">Code</a></li>
+                <li><a href="#download">Download</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">Professional Development Workshop</div>
+        <h1>AI Coding in the Real World</h1>
+        <p class="hero-subtitle">
+            Master AI-assisted development with hands-on labs. Learn to analyze legacy code, 
+            build microservices, and design AI-augmented workflows that actually work.
+        </p>
+        
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Modules</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">5h</div>
+                <div class="stat-label">Duration</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">20+</div>
+                <div class="stat-label">AI Prompts</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">4</div>
+                <div class="stat-label">Hands-on Labs</div>
+            </div>
+        </div>
+
+        <div class="hero-cta">
+            <a href="00-course-overview.html" class="btn btn-primary">
+                Start Learning →
+            </a>
+            <a href="#download" class="btn btn-secondary">
+                📦 Download Package
+            </a>
+        </div>
+    </section>
+
+    <!-- Modules Section -->
+    <section class="section" id="modules">
+        <div class="section-header">
+            <h2 class="section-title">Course Modules</h2>
+            <p class="section-subtitle">Progressive learning path from fundamentals to advanced workflows</p>
+        </div>
+
+        <div class="modules-grid">
+            <!-- Module 1 -->
+            <a href="module-01-understanding-workspace-ai.html" class="module-card">
+                <div class="module-header">
+                    <div class="module-number">01</div>
+                    <div class="module-meta">
+                        <span class="module-duration">⏱️ 45 min</span>
+                    </div>
+                </div>
+                <h3 class="module-title">Understanding Your Workspace & AI</h3>
+                <p class="module-description">
+                    Map your current workflow, identify where AI fits, and establish safe usage patterns.
+                </p>
+                <div class="module-topics">
+                    <span class="topic-tag">Workflow Mapping</span>
+                    <span class="topic-tag">AI Value Matrix</span>
+                    <span class="topic-tag">Risk Assessment</span>
+                </div>
+            </a>
+
+            <!-- Module 2 -->
+            <a href="module-02-ai-coding-patterns.html" class="module-card">
+                <div class="module-header">
+                    <div class="module-number">02</div>
+                    <div class="module-meta">
+                        <span class="module-duration">⏱️ 60 min</span>
+                    </div>
+                </div>
+                <h3 class="module-title">AI Coding Patterns in Practice</h3>
+                <p class="module-description">
+                    Master prompts for code understanding, generation, refactoring, and reviews.
+                </p>
+                <div class="module-topics">
+                    <span class="topic-tag">Code Understanding</span>
+                    <span class="topic-tag">Generation</span>
+                    <span class="topic-tag">Refactoring</span>
+                    <span class="topic-tag">Reviews</span>
+                </div>
+            </a>
+
+            <!-- Module 3 -->
+            <a href="module-03-devops-testing-quality.html" class="module-card">
+                <div class="module-header">
+                    <div class="module-number">03</div>
+                    <div class="module-meta">
+                        <span class="module-duration">⏱️ 60 min</span>
+                    </div>
+                </div>
+                <h3 class="module-title">DevOps, Testing & Quality with AI</h3>
+                <p class="module-description">
+                    Generate CI/CD pipelines, test suites, and debug errors faster with AI assistance.
+                </p>
+                <div class="module-topics">
+                    <span class="topic-tag">CI/CD Pipelines</span>
+                    <span class="topic-tag">Test Generation</span>
+                    <span class="topic-tag">Error Analysis</span>
+                </div>
+            </a>
+
+            <!-- Module 4 - Featured -->
+            <a href="module-04-legacy-to-microservice.html" class="module-card featured">
+                <div class="module-header">
+                    <div class="module-number">04</div>
+                    <div class="module-meta">
+                        <span class="module-duration">⏱️ 90 min</span>
+                        <span class="module-badge">🔥 DEEP LAB</span>
+                    </div>
+                </div>
+                <h3 class="module-title">Legacy to Microservice with AI</h3>
+                <p class="module-description">
+                    The main hands-on experience. Migrate a real Flask monolith to FastAPI microservice 
+                    using AI at every step—from analysis to testing.
+                </p>
+                <div class="module-topics">
+                    <span class="topic-tag">Monolith Analysis</span>
+                    <span class="topic-tag">Service Scaffolding</span>
+                    <span class="topic-tag">Business Logic</span>
+                    <span class="topic-tag">Migration Testing</span>
+                    <span class="topic-tag">Docker</span>
+                </div>
+            </a>
+
+            <!-- Module 5 -->
+            <a href="module-05-ai-augmented-workflow.html" class="module-card">
+                <div class="module-header">
+                    <div class="module-number">05</div>
+                    <div class="module-meta">
+                        <span class="module-duration">⏱️ 45 min</span>
+                    </div>
+                </div>
+                <h3 class="module-title">Designing Your AI-Augmented Workflow</h3>
+                <p class="module-description">
+                    Create your personal action plan and team adoption strategy for AI integration.
+                </p>
+                <div class="module-topics">
+                    <span class="topic-tag">Workflow Design</span>
+                    <span class="topic-tag">Quick Wins</span>
+                    <span class="topic-tag">Team Standards</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Labs Section -->
+    <section class="section" id="labs">
+        <div class="labs-container">
+            <div class="labs-header">
+                <div>
+                    <h2 class="labs-title">🧪 Module 4: Hands-on Labs</h2>
+                    <p class="labs-subtitle">Progressive code artifacts — jump to any point</p>
+                </div>
+                <a href="code/README.md" class="btn btn-secondary" style="padding: 0.75rem 1.5rem;">
+                    View Code README
+                </a>
+            </div>
+
+            <div class="labs-grid">
+                <div class="lab-card">
+                    <div class="lab-number">1</div>
+                    <h4 class="lab-title">Analyze the Monolith</h4>
+                    <p class="lab-duration">20 minutes</p>
+                    <div class="lab-tech">
+                        <span class="tech-badge">Flask</span>
+                        <span class="tech-badge">SQLAlchemy</span>
+                        <span class="tech-badge">Analysis</span>
+                    </div>
+                </div>
+
+                <div class="lab-card">
+                    <div class="lab-number">2</div>
+                    <h4 class="lab-title">Scaffold Microservice</h4>
+                    <p class="lab-duration">25 minutes</p>
+                    <div class="lab-tech">
+                        <span class="tech-badge">FastAPI</span>
+                        <span class="tech-badge">Pydantic</span>
+                        <span class="tech-badge">SQLAlchemy 2.0</span>
+                    </div>
+                </div>
+
+                <div class="lab-card">
+                    <div class="lab-number">3</div>
+                    <h4 class="lab-title">Business Logic</h4>
+                    <p class="lab-duration">25 minutes</p>
+                    <div class="lab-tech">
+                        <span class="tech-badge">Repository</span>
+                        <span class="tech-badge">Service Layer</span>
+                        <span class="tech-badge">REST API</span>
+                    </div>
+                </div>
+
+                <div class="lab-card">
+                    <div class="lab-number">4</div>
+                    <h4 class="lab-title">Migration Testing</h4>
+                    <p class="lab-duration">20 minutes</p>
+                    <div class="lab-tech">
+                        <span class="tech-badge">pytest</span>
+                        <span class="tech-badge">httpx</span>
+                        <span class="tech-badge">Docker</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Preview Section -->
+    <section class="section" id="code">
+        <div class="section-header">
+            <h2 class="section-title">Real Production Code</h2>
+            <p class="section-subtitle">Complete working examples at every lab stage</p>
+        </div>
+
+        <div class="code-preview">
+            <div class="code-header">
+                <div class="code-tabs">
+                    <button class="code-tab active">order_service.py</button>
+                    <button class="code-tab">test_api.py</button>
+                    <button class="code-tab">Dockerfile</button>
+                </div>
+            </div>
+            <div class="code-body">
+<pre><span class="code-comment"># Lab 3: Order Service - Business Logic Layer</span>
+<span class="code-keyword">from</span> decimal <span class="code-keyword">import</span> Decimal
+<span class="code-keyword">from</span> typing <span class="code-keyword">import</span> List, Optional
+
+<span class="code-keyword">from</span> app.models <span class="code-keyword">import</span> <span class="code-class">Order</span>, <span class="code-class">OrderItem</span>, <span class="code-class">OrderStatus</span>
+<span class="code-keyword">from</span> app.repositories <span class="code-keyword">import</span> <span class="code-class">OrderRepository</span>
+<span class="code-keyword">from</span> app.schemas <span class="code-keyword">import</span> <span class="code-class">OrderCreate</span>, <span class="code-class">OrderUpdate</span>
+
+
+<span class="code-keyword">class</span> <span class="code-class">OrderService</span>:
+    <span class="code-string">"""Service layer for order business logic."""</span>
+    
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(self, repository: <span class="code-class">OrderRepository</span>):
+        self.repository = repository
+    
+    <span class="code-keyword">async def</span> <span class="code-function">create_order</span>(self, data: <span class="code-class">OrderCreate</span>) -> <span class="code-class">Order</span>:
+        <span class="code-string">"""Create a new order with items and calculate total."""</span>
+        order = <span class="code-class">Order</span>(
+            user_id=data.user_id,
+            shipping_address=data.shipping_address,
+            status=<span class="code-class">OrderStatus</span>.PENDING.value
+        )
+        
+        total = Decimal(<span class="code-string">"0.00"</span>)
+        <span class="code-keyword">for</span> item_data <span class="code-keyword">in</span> data.items:
+            item = <span class="code-class">OrderItem</span>(...)</span>
+            order.items.append(item)
+            total += item.subtotal
+        
+        order.total = total
+        <span class="code-keyword">return await</span> self.repository.create(order)</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section class="section" id="download">
+        <div class="download-section">
+            <div class="download-icon">📦</div>
+            <h2 class="download-title">Download Complete Package</h2>
+            <p class="download-description">
+                Get everything you need: HTML modules, code for all 4 labs, tests, Docker configs, 
+                and documentation. Ready for instructors and students.
+            </p>
+            
+            <div class="download-stats">
+                <div class="download-stat">
+                    <div class="download-stat-value">6</div>
+                    <div class="download-stat-label">HTML Modules</div>
+                </div>
+                <div class="download-stat">
+                    <div class="download-stat-value">55+</div>
+                    <div class="download-stat-label">Python Files</div>
+                </div>
+                <div class="download-stat">
+                    <div class="download-stat-value">4</div>
+                    <div class="download-stat-label">Lab Stages</div>
+                </div>
+                <div class="download-stat">
+                    <div class="download-stat-value">~220KB</div>
+                    <div class="download-stat-label">Total Size</div>
+                </div>
+            </div>
+
+            <a href="ai-coding-workshop.zip" class="btn btn-primary" style="font-size: 1.125rem; padding: 1.25rem 2.5rem;">
+                ⬇️ Download ai-coding-workshop.zip
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-logo">AI Coding Workshop</div>
+        <p>Built with ❤️ for developers who want to work smarter with AI</p>
+    </footer>
+
+    <script>
+        // Simple tab switching for code preview
+        document.querySelectorAll('.code-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
