@@ -24,6 +24,9 @@ RUN pip install --no-cache-dir /wheels/* && rm -rf /wheels
 # Copy application
 COPY app/ ./app/
 
+# Create data directory with correct permissions
+RUN mkdir -p /app/data && chown -R appuser:appgroup /app/data
+
 # Environment
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \

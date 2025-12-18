@@ -18,7 +18,7 @@ echo "========================================"
 case "$MODE" in
     up)
         echo "Starting services..."
-        docker-compose up -d --build
+        docker compose up -d --build
         echo ""
         echo "✅ Services started!"
         echo ""
@@ -28,26 +28,26 @@ case "$MODE" in
         echo "   ReDoc:    http://localhost:8000/redoc"
         echo ""
         echo "📋 Useful commands:"
-        echo "   View logs:  docker-compose logs -f"
+        echo "   View logs:  docker compose logs -f"
         echo "   Stop:       ./docker-compose-up.sh down"
         echo "   Restart:    ./docker-compose-up.sh restart"
         ;;
     down)
         echo "Stopping services..."
-        docker-compose down
+        docker compose down
         echo "✅ Services stopped!"
         ;;
     restart)
         echo "Restarting services..."
-        docker-compose down
-        docker-compose up -d --build
+        docker compose down
+        docker compose up -d --build
         echo "✅ Services restarted!"
         ;;
     logs)
-        docker-compose logs -f
+        docker compose logs -f
         ;;
     status)
-        docker-compose ps
+        docker compose ps
         ;;
     *)
         echo "Usage: $0 {up|down|restart|logs|status}"

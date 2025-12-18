@@ -3,11 +3,12 @@ Database Configuration - Async SQLAlchemy 2.0 Setup
 Lab 2 Complete: Project scaffolding with database ready.
 """
 
+import os
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 
-DATABASE_URL = "sqlite+aiosqlite:///./orders.db"
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./orders.db")
 
 engine = create_async_engine(DATABASE_URL, echo=True)
 

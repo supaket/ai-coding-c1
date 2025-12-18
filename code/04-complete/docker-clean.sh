@@ -21,7 +21,7 @@ echo "========================================"
 echo "Stopping containers..."
 docker stop "$CONTAINER_NAME" 2>/dev/null || true
 docker rm "$CONTAINER_NAME" 2>/dev/null || true
-docker-compose down 2>/dev/null || true
+docker compose down 2>/dev/null || true
 
 # Remove image
 echo "Removing image: $IMAGE_NAME"

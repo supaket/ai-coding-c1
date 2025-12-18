@@ -26,7 +26,7 @@ fi
 # Stop docker-compose services
 if [ -f "docker-compose.yml" ]; then
     echo "Stopping docker-compose services..."
-    docker-compose down 2>/dev/null || true
+    docker compose down 2>/dev/null || true
     echo "✅ Docker-compose services stopped"
 fi
 
