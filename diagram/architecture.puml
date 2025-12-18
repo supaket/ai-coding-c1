@@ -1,0 +1,36 @@
+@startuml
+!theme plain
+
+package "Client Layer" {
+  [Web / Mobile App] as Client
+}
+
+package "API Layer (FastAPI)" {
+  [Routes / Controllers] as API
+  note right of API: app/api/v1/orders.py
+}
+
+package "Business Logic Layer" {
+  [Order Service] as Service
+  note right of Service: app/services/order_service.py\n(Validation, Calculation, Stock Check)
+}
+
+package "Data Access Layer" {
+  [Order Repository] as Repository
+  note right of Repository: app/repositories/order_repository.py\n(CRUD Operations)
+}
+
+package "Data Storage" {
+  database "Order Database" as DB
+  collections "Product Catalog\n(Mock/External)" as Products
+}
+
+' Relationships
+Client -> API : HTTP Request (POST /orders)
+API -> Service : create_order(OrderCreate)
+Service -> Products : Check Stock & Get Price
+Service -> Service : Calculate Total
+Service -> Repository : create(Order)
+Repository -> DB : INSERT INTO orders...
+
+@enduml
