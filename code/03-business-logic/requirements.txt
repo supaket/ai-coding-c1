@@ -1,7 +1,7 @@
-# Order Service - Lab 2 Requirements
-fastapi==0.109.0
-uvicorn[standard]==0.27.0
-sqlalchemy[asyncio]==2.0.25
-aiosqlite==0.19.0
-pydantic==2.5.3
-pydantic-settings==2.1.0
+# Order Service - Lab 3 Requirements
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+sqlalchemy[asyncio]>=2.0.36
+aiosqlite>=0.20.0
+pydantic>=2.10.0
+pydantic-settings>=2.6.0
