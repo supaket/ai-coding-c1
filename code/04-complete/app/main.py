@@ -1,12 +1,15 @@
-"""
-ShopFast API - FastAPI Application
+"""ShopFast API - FastAPI Application.
+
 Full microservice with Users, Products, Orders, Inventory, and Notifications.
 
 Run: uvicorn app.main:app --reload
 Docs: http://localhost:8000/docs
 """
 
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from typing import Any
+
 from fastapi import FastAPI
 
 from app.core.database import engine, Base
@@ -14,7 +17,7 @@ from app.api.v1 import health, orders, users, products, inventory, notifications
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan - startup and shutdown."""
     # Startup: Create database tables
     async with engine.begin() as conn:
@@ -32,9 +35,9 @@ def create_app() -> FastAPI:
         version="1.0.0",
         docs_url="/docs",
         redoc_url="/redoc",
-        lifespan=lifespan
+        lifespan=lifespan,
     )
-    
+
     # Include routers
     app.include_router(health.router, prefix="/api/v1", tags=["Health"])
     app.include_router(users.router, prefix="/api/v1", tags=["Users"])
@@ -42,15 +45,15 @@ def create_app() -> FastAPI:
     app.include_router(orders.router, prefix="/api/v1", tags=["Orders"])
     app.include_router(inventory.router, prefix="/api/v1", tags=["Inventory"])
     app.include_router(notifications.router, prefix="/api/v1", tags=["Notifications"])
-    
+
     @app.get("/", tags=["Root"])
-    async def root():
+    async def root() -> dict[str, str]:
         return {
             "message": "ShopFast API",
             "docs": "/docs",
-            "health": "/api/v1/health"
+            "health": "/api/v1/health",
         }
-    
+
     return app
 
 
