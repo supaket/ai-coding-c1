@@ -4,17 +4,17 @@ Pydantic Schemas for Product API
 
 from datetime import datetime
 from decimal import Decimal
-from typing import Optional
+
 from pydantic import BaseModel, ConfigDict, Field, computed_field
 
 
 class ProductCreate(BaseModel):
     """Request schema for creating a product."""
     name: str = Field(..., min_length=1, max_length=200, description="Product name")
-    description: Optional[str] = Field(None, max_length=2000, description="Product description")
+    description: str | None = Field(None, max_length=2000, description="Product description")
     price: Decimal = Field(..., gt=0, description="Product price")
     stock: int = Field(0, ge=0, description="Initial stock quantity")
-    category: Optional[str] = Field(None, max_length=50, description="Product category")
+    category: str | None = Field(None, max_length=50, description="Product category")
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -35,10 +35,10 @@ class ProductResponse(BaseModel):
 
     id: int
     name: str
-    description: Optional[str]
+    description: str | None
     price: Decimal
     stock: int
-    category: Optional[str]
+    category: str | None
     created_at: datetime
 
     @computed_field
@@ -60,7 +60,7 @@ class LowStockItem(BaseModel):
     id: int
     name: str
     stock: int
-    category: Optional[str]
+    category: str | None
 
 
 class BulkRestockItem(BaseModel):

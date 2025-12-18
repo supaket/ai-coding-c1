@@ -5,7 +5,6 @@ Lab 2 Complete: Request/response schemas with validation.
 
 from datetime import datetime
 from decimal import Decimal
-from typing import List, Optional
 from enum import Enum
 
 from pydantic import BaseModel, Field, ConfigDict, computed_field
@@ -56,9 +55,9 @@ class OrderItemResponse(BaseModel):
 class OrderCreate(BaseModel):
     """Request schema for creating an order."""
     user_id: int = Field(..., gt=0, description="User ID")
-    shipping_address: Optional[str] = Field(None, max_length=500)
-    notes: Optional[str] = Field(None, max_length=1000)
-    items: List[OrderItemCreate] = Field(..., min_length=1, description="Order items")
+    shipping_address: str | None = Field(None, max_length=500)
+    notes: str | None = Field(None, max_length=1000)
+    items: list[OrderItemCreate] = Field(..., min_length=1, description="Order items")
     
     model_config = ConfigDict(
         json_schema_extra={
@@ -77,9 +76,9 @@ class OrderCreate(BaseModel):
 
 class OrderUpdate(BaseModel):
     """Request schema for updating an order."""
-    status: Optional[OrderStatus] = None
-    shipping_address: Optional[str] = Field(None, max_length=500)
-    notes: Optional[str] = Field(None, max_length=1000)
+    status: OrderStatus | None = None
+    shipping_address: str | None = Field(None, max_length=500)
+    notes: str | None = Field(None, max_length=1000)
     
     model_config = ConfigDict(
         json_schema_extra={
@@ -96,11 +95,11 @@ class OrderResponse(BaseModel):
     user_id: int
     status: str
     total: Decimal
-    shipping_address: Optional[str]
-    notes: Optional[str]
+    shipping_address: str | None
+    notes: str | None
     created_at: datetime
     updated_at: datetime
-    items: List[OrderItemResponse]
+    items: list[OrderItemResponse]
     
     @computed_field
     @property
@@ -123,7 +122,7 @@ class OrderSummary(BaseModel):
 
 class PaginatedOrders(BaseModel):
     """Paginated order list response."""
-    items: List[OrderSummary]
+    items: list[OrderSummary]
     total: int
     page: int
     page_size: int
@@ -139,7 +138,7 @@ class PaginatedOrders(BaseModel):
 class ErrorResponse(BaseModel):
     """Error response schema."""
     error: str
-    detail: Optional[str] = None
+    detail: str | None = None
     
     model_config = ConfigDict(
         json_schema_extra={

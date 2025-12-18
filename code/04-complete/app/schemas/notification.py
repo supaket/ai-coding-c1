@@ -3,7 +3,7 @@ Pydantic Schemas for Notification API
 """
 
 from datetime import datetime
-from typing import Optional
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -17,14 +17,14 @@ class NotificationResponse(BaseModel):
     subject: str
     message: str
     status: str
-    reference_id: Optional[int]
+    reference_id: int | None
     created_at: datetime
-    sent_at: Optional[datetime]
+    sent_at: datetime | None
 
 
 class NotificationMarkSent(BaseModel):
     """Request schema for marking notification as sent."""
-    sent_at: Optional[datetime] = Field(None, description="When the notification was sent")
+    sent_at: datetime | None = Field(None, description="When the notification was sent")
 
 
 class PendingNotificationsResponse(BaseModel):
