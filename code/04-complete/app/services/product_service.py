@@ -1,9 +1,4 @@
-"""
-Product Service - Business Logic Layer
-"""
-
-from typing import List, Tuple, Optional
-from decimal import Decimal
+"""Product Service - Business Logic Layer."""
 
 from app.models import Product
 from app.repositories.product_repository import ProductRepository
@@ -14,7 +9,7 @@ from app.core.exceptions import ProductNotFoundError
 class ProductService:
     """Service layer for product business logic."""
 
-    def __init__(self, repository: ProductRepository):
+    def __init__(self, repository: ProductRepository) -> None:
         self.repository = repository
 
     async def create_product(self, data: ProductCreate) -> Product:
@@ -24,7 +19,7 @@ class ProductService:
             description=data.description,
             price=data.price,
             stock=data.stock,
-            category=data.category
+            category=data.category,
         )
         return await self.repository.create(product)
 
@@ -37,18 +32,18 @@ class ProductService:
 
     async def list_products(
         self,
-        category: Optional[str] = None,
+        category: str | None = None,
         page: int = 1,
-        page_size: int = 20
-    ) -> Tuple[List[Product], int]:
+        page_size: int = 20,
+    ) -> tuple[list[Product], int]:
         """List products with optional filtering."""
         return await self.repository.get_all(
             category=category,
             page=page,
-            page_size=page_size
+            page_size=page_size,
         )
 
-    async def get_low_stock_items(self, threshold: int = 10) -> List[Product]:
+    async def get_low_stock_items(self, threshold: int = 10) -> list[Product]:
         """Get products with low stock."""
         return await self.repository.get_low_stock(threshold)
 
@@ -59,7 +54,7 @@ class ProductService:
             raise ProductNotFoundError(product_id)
         return product
 
-    async def bulk_restock(self, data: BulkRestockRequest) -> List[Product]:
+    async def bulk_restock(self, data: BulkRestockRequest) -> list[Product]:
         """Bulk restock multiple products."""
         updated_products = []
         for item in data.items:

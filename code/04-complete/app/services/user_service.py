@@ -1,6 +1,4 @@
-"""
-User Service - Business Logic Layer
-"""
+"""User Service - Business Logic Layer."""
 
 from app.models import User
 from app.repositories.user_repository import UserRepository
@@ -11,7 +9,7 @@ from app.core.exceptions import UserNotFoundError, UserAlreadyExistsError
 class UserService:
     """Service layer for user business logic."""
 
-    def __init__(self, repository: UserRepository):
+    def __init__(self, repository: UserRepository) -> None:
         self.repository = repository
 
     async def create_user(self, data: UserCreate) -> User:
@@ -23,7 +21,7 @@ class UserService:
 
         user = User(
             email=data.email,
-            name=data.name
+            name=data.name,
         )
         return await self.repository.create(user)
 

@@ -1,9 +1,6 @@
-"""
-Notification Service - Business Logic Layer
-"""
+"""Notification Service - Business Logic Layer."""
 
 from datetime import datetime
-from typing import List, Optional
 
 from app.models import Notification, NotificationType, NotificationStatus
 from app.repositories.notification_repository import NotificationRepository
@@ -13,17 +10,17 @@ from app.core.exceptions import NotificationNotFoundError
 class NotificationService:
     """Service layer for notification business logic."""
 
-    def __init__(self, repository: NotificationRepository):
+    def __init__(self, repository: NotificationRepository) -> None:
         self.repository = repository
 
-    async def get_pending_notifications(self) -> List[Notification]:
+    async def get_pending_notifications(self) -> list[Notification]:
         """Get all pending notifications."""
         return await self.repository.get_pending()
 
     async def mark_as_sent(
         self,
         notification_id: int,
-        sent_at: Optional[datetime] = None
+        sent_at: datetime | None = None,
     ) -> Notification:
         """Mark notification as sent."""
         notification = await self.repository.mark_sent(notification_id, sent_at)

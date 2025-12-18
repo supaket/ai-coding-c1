@@ -1,10 +1,6 @@
-"""
-Order Service - Business Logic Layer
-Lab 3 Complete: Extracted business logic from legacy routes.
-"""
+"""Order Service - Business Logic Layer."""
 
 from decimal import Decimal
-from typing import List, Optional, Tuple
 
 from app.models import Order, OrderItem, OrderStatus
 from app.repositories.order_repository import OrderRepository
@@ -12,7 +8,7 @@ from app.schemas import OrderCreate, OrderUpdate
 from app.core.exceptions import (
     OrderNotFoundError,
     InvalidStatusTransitionError,
-    OrderCancellationError
+    OrderCancellationError,
 )
 
 # Mock product catalog (in real app, this would call Product Service)
@@ -30,10 +26,10 @@ PRODUCTS = {
 
 class OrderService:
     """Service layer for order business logic."""
-    
-    def __init__(self, repository: OrderRepository):
+
+    def __init__(self, repository: OrderRepository) -> None:
         self.repository = repository
-    
+
     async def create_order(self, data: OrderCreate) -> Order:
         """
         Create a new order with items.
@@ -78,20 +74,20 @@ class OrderService:
     
     async def list_orders(
         self,
-        user_id: Optional[int] = None,
-        status: Optional[str] = None,
+        user_id: int | None = None,
+        status: str | None = None,
         page: int = 1,
-        page_size: int = 20
-    ) -> Tuple[List[Order], int]:
+        page_size: int = 20,
+    ) -> tuple[list[Order], int]:
         """List orders with optional filtering and pagination."""
         return await self.repository.get_all(
             user_id=user_id,
             status=status,
             page=page,
-            page_size=page_size
+            page_size=page_size,
         )
-    
-    async def get_user_orders(self, user_id: int) -> List[Order]:
+
+    async def get_user_orders(self, user_id: int) -> list[Order]:
         """Get all orders for a specific user."""
         return await self.repository.get_by_user_id(user_id)
     
